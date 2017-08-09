@@ -1,0 +1,395 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Chapter Three},
+            pdfauthor={Ryan B. Honea},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Chapter Three}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Ryan B. Honea}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise One}\label{exercise-one}
+
+\paragraph{Question}\label{question}
+
+Verify the expressions given for the mean and variance in (3.2) for
+statistics based on sums \(S_+\) or \(S_-\) of signed scores
+\(s_i, 1 = 1,2,...,n\) where the sign associated with each \(s_i\) is
+equally likely to be plus or minus.
+
+\paragraph{Solution}\label{solution}
+
+\subsection{Exercise Two}\label{exercise-two}
+
+\paragraph{Question}\label{question-1}
+
+In Comment 4 on Example 3.10 we asserted that the usual \(t\)-statistic
+could be used in place of \(S_+\) as the test statistics for the Pitman
+test because there was a one-to-one correspondence between the ordering
+of the two statistics. Establish that this is so. (Hint: show that the
+denominator of the \(t\)-statistic is invariant under all permutations
+of the signs of the derivations \(d_i\).)
+
+\paragraph{Solution}\label{solution-1}
+
+\subsection{Exercise Three}\label{exercise-three}
+
+\paragraph{Question}\label{question-2}
+
+In Comment 3 on Example 3.2 we suggested that for a variety of reasons
+one should be cautious about extending inferences about heartbeat rates
+for female students to the population at large. What might some of these
+reasons be?
+
+\paragraph{Solution}\label{solution-2}
+
+\subsection{Exercise Four}\label{exercise-four}
+
+\paragraph{Question}\label{question-3}
+
+Using the data in in Table 3.1 for the distribution of the Wilcoxon
+\(S\) when \(n = 7\), construct a bar chart like that in Figure 3.1
+showing the probability function for \(S\). Discuss the similarity, or
+lack of similarity, to a normal distribution probability density
+function.
+
+\paragraph{Solution}\label{solution-3}
+
+\subsection{Exercise Five}\label{exercise-five}
+
+\paragraph{Question}\label{question-4}
+
+Establish that the permutation distribution of the Wilcoxon signed-rank
+statistic for testing the hypothesis \(H_0: \theta = 6\), given the
+observations \[4\quad4\quad8\quad8\quad8\quad8\quad8\] has a
+distribution equivelant to that fo rthe sign test of the same
+hypothesis. Would this equivelance hold if the null hypothesis was
+changed to \(H_0: \theta = 7\)?
+
+\paragraph{Solution}\label{solution-4}
+
+\subsection{Exercise Six}\label{exercise-six}
+
+\paragraph{Question}\label{question-5}
+
+Establish nominal 95 percent confidence intervals for the median based
+on the Wilcoxon signed-rank test for the following data sets. If an
+appropriate computer program is available use it to comment on the
+discontinuities at the end points of your estimated intervals based on
+Walsh averages.
+\[\text{Set I }\quad1\quad1\quad1\quad1\quad1\quad3\quad3\quad5\quad5\quad7\quad7 \]
+\[\text{Set II}\quad1\quad2\quad2\quad4\quad4\quad4\quad4\quad5\quad5\quad5\quad7 \]
+
+\paragraph{Solution}\label{solution-5}
+
+\subsection{Exercise Seven}\label{exercise-seven}
+
+\paragraph{Question}\label{question-6}
+
+Form a table of Walsh Averages for the Fisher sentence length data given
+in Example 3.6, and use it to obtain 95 and 99 percent cofidence
+intervals.
+
+\paragraph{Solution}\label{solution-6}
+
+\subsection{Exercise Eight}\label{exercise-eight}
+
+\paragraph{Question}\label{question-7}
+
+The numbers of pages in the sample of 12 books given in Exercise 2.5
+were
+\[126\quad142\quad156\quad228\quad245\quad246\quad370\quad419\quad433\quad454\quad478\quad503\]
+Use the Wilcoxon signed-rank test to test the hypothesis that the mean
+number of pages in the statistics books in the library from which the
+sample was taken is 400. Obtain a 95 percent confidence interval for the
+mean number of pages based on this Wilcoxon test and compare it with the
+interval obtained using a \(t\)-test under an assumption of normality.
+
+\paragraph{Solution}\label{solution-7}
+
+\subsection{Exercise Nine}\label{exercise-nine}
+
+\paragraph{Question}\label{question-8}
+
+Apply the sign test to the data in Example 3.2 for the hypotheses
+considered there.
+
+\subsection{Exercise Ten}\label{exercise-ten}
+
+\paragraph{Question}\label{question-9}
+
+For the sample of 20 in Example 3.7 if \(\theta\) is the population
+median test the hypothesis \(H_0: \theta = 9\) against the alternative
+\(H_1: \theta \neq 9\) using the sign test by computing any relevant
+binomial pobabilities directly from the binomial probability formula. It
+is not necessary to determine the complete distribution to obtain the
+relevant \(P\) value. To perform the test for \(H_0: \theta = 7.5\)
+against the alternative \(H_1: \theta > 7.5\) additional terms in the
+distribution will be needed. Either calculate these, or use tables or
+computer software to carry out the appropriate test.
+
+\subsection{Exercise Eleven}\label{exercise-eleven}
+
+\paragraph{Question}\label{question-10}
+
+Before treatment with a new drug 11 people with sleep problems have a
+median sleeping time of 2 hours per night. A drug is administered and it
+is known for good scientific reasons that it ahs an effct it will
+increase sleeping time but some doctors doubt it will have any effect.
+Are their doubts justified if the hours per night slept by these
+individuals after taking the drug are: \[
+3.1\quad1.8\quad2.7\quad2.4\quad2.9\quad0.2\quad3.7\quad5.1\quad8.3\quad2.1\quad2.4
+\]
+
+\subsection{Exercise Twelve}\label{exercise-twelve}
+
+\paragraph{Question}\label{question-11}
+
+Kimura and Chikuni (1987) give data for lengths of Greenland turbot of
+various ages sampled from commercial catches in the Bering Sea as aaged
+and measured by the Northwest and Alaska Fisheries Center. for
+12-year-old turbot the numbers of each length were:
+
+\[\begin{array}
+{cccccccccc}
+\text{Length (cm)} & 64 & 65 & 66 & 67 & 68 & 69 & 70 & 71 & 72 & 73 & 75 & 77 & 78 & 83 \\
+\text{No. of Fish} & 1 & 2 & 1 & 1 & 4 & 3 & 4 & 5 & 3 & 3 & 1 & 6 & 1 & 1 \\
+\end{array}
+\]
+
+Would you agree with someone who asserted that, on this evidence, the
+median length of 12-year-old Greenland Turbot was almost certanly
+between 69 and 72 cm?
+
+\subsection{Exercise Thirteen}\label{exercise-thirteen}
+
+\paragraph{Question}\label{question-12}
+
+Use the Wilcoxon signed-rank test to test the hypothesis that the median
+length of 12-year-old turbots is 73.5 using the data in Exercise 12.
+
+\subsection{Exercise Fourteen}\label{exercise-fourteen}
+
+\paragraph{Question}\label{question-13}
+
+The first application listed in Section 3.7 involved British insurance
+claims. The 2005 median was £1570. A random sample of 14 claims from a
+large batch received in the first quarter of 2006 were for the following
+amounts (in £): \[
+1175\quad1183\quad1327\quad1581\quad1592\quad1624\quad1777\quad1924\quad2483\quad2642\quad2713\quad3419\quad5250\quad7615
+\] What test do you consider appropriate fo ra shift in median relative
+to the 2005 median? Would a one-tail test be appropriate? Obtain a 95
+percent confidence interval for the median based upon these data. If all
+amounts were converted to, say, Euros or to \$US, would your conclusions
+be the same?
+
+\subsection{Exercise Fifteen}\label{exercise-fifteen}
+
+\paragraph{Question}\label{question-14}
+
+The weight losses in kilograms for 16 overweight women who have been on
+a diet for 2 months are as follows: \[
+4\quad6\quad3\quad1\quad2\quad5\quad4\quad0\quad3\quad6\quad3\quad1\quad7\quad2\quad5\quad6
+\] The firm sponsoring the diet advertises ``Lose 5kg in 2 months''. In
+a consumer affairs radio programme, the claim this is an ``average''
+weight loss. You may be unclear as to what the sponsors mean by
+``average'', but assuming the sample size is effectively random do the
+data support a median weight loss of 5 kg in the population of dieters?
+Test this without an assumption of symmetry. What would be a more
+appropriate test with an assumption of symmetry? Carry out this latter
+test.
+
+\subsection{Exercise Sixteen}\label{exercise-sixteen}
+
+\paragraph{Question}\label{question-15}
+
+A pathologist counts the numbers of diseased plants in randomly selected
+areas each 1 metre square on a large field. For 40 such areas the
+numbers of diseased plants are:
+
+\[\begin{array}
+{cccccccccc}
+21 & 18 & 42 & 29 & 81 & 12 & 94 & 117 & 88 & 210 \\
+44 & 39 & 11 & 83 & 42 & 93 & 2 & 11 & 33 & 91 \\
+141 & 48 & 12 & 50 & 61 & 35 & 111 & 73 & 5 & 44\\
+6 & 11 & 35 & 91 & 147 & 83 & 91 & 48 & 22 & 17
+\end{array}
+\]
+
+Use histograms and boxplots to decide whether there is evidence of
+skewness or outliers. Use nonparametric tests to find whether it is
+reasonable to assume the median number of diseased plants per square
+metre might be 50 (i) without assuming population symmetry, (ii)
+assuming population symmetry. For these data and the evidence provided
+by a boxplot and histograms do you consider the latter assumption
+reasonable?
+
+\subsection{Exercise Seventeen}\label{exercise-seventeen}
+
+\paragraph{Question}\label{question-16}
+
+A parking attendant notes the time cars have been illegaly parked after
+their metered time has expired. For 16 offending cars, he records the
+time in minutes as:
+\[ 10\quad42\quad29\quad11\quad63\quad145\quad11\quad8\quad23\quad17\quad5\quad20\quad15\quad36\quad32\quad15 \]
+Obtain an appropriate 95 percent confidence interval for the median
+overstay time of offenders prior to detection. What assumptions were you
+making to justify using the method you did? To what populaton do you
+think the confidence interval you obtained might apply?
+
+\subsection{Exercise Eighteen}\label{exercise-eighteen}
+
+\paragraph{Question}\label{question-17}
+
+Knapp (1982) gives the eprcentage of births on each day of the year
+averaged over 28 years for Monroe County, new York. Ignoring leap years
+(which makes little difference), the median percentage of births per day
+is 0.2746. Not suprisingly, this is close to the expected percentage on
+the assumption that births are equally like to be on any day, that is,
+\(100/365 \approx 0.274\). We give below the average percentage for each
+day in the month of September. If births are equally like to be on any
+day of the year, this should resemble a random sample from a population
+with median 0.2746. Do these data confirm this?
+
+\[\begin{array}
+{cccccccccc}
+0.277 & 0.277 & 0.295 & 0.286 & 0.271 & 0.265 & 0.274 & 0.274 & 0.278 & 0.290\\
+0.295 & 0.276 & 0.273 & 0.289 & 0.308 & 0.301 & 0.302 & 0.293 & 0.296 & 0.288\\
+0.305 & 0.283 & 0.309 & 0.299 & 0.287 & 0.309 & 0.294 & 0.288 & 0.298 & 0.289
+\end{array}
+\]
+
+\subsection{Exercise Nineteen}\label{exercise-nineteen}
+
+\paragraph{Question}\label{question-18}
+
+A standard method for assembling a routine component in a manufacturing
+process is known to take a trained operative a median time of 14.2
+mintues to complete. A new method of assembling that same component is
+proposed. Twenty operatives are given practice sessions using the new
+method, after which each claims he or she fully understands the process.
+They are then each timed for assembling one new component. The times in
+minutes they take are: \[\begin{array}
+{cccccccccc}
+14.2 & 11.3 & 12.7 & 19.2 & 13.5 & 14.4 & 11.8 & 15.1 & 12.3 & 11.7\\
+13.2 & 13.4 & 14.0 & 14.1 & 13.7 & 11.9 & 11.8 & 10.7 & 11.3 & 12.2
+\end{array}
+\] Form a boxplot for the data. Follow this by any tests you consider
+appropriate to indicate whether the median assembly time in mass
+production is likely to differ from 14.2. Also obtain nominal 95 percent
+confidence intervals for the median time associated with any test you
+use. Compare in each case the intervals based on exact procedures with
+the related asymptotic approximate intervals.
+
+\subsection{Exercise Twenty}\label{exercise-twenty}
+
+\paragraph{Question}\label{question-19}
+
+In a class of 52 students 36 are categorized as being voerweight. In an
+attempt to reduce obesity these 36 all volunteer to go on a diet. Each
+is weighed at the start of the diet period, and after 3 weeks any gain
+or loss in weight is recorded. A negative sign indicates a loss. Form a
+boxplot of the gain or loss in weight and comment on any features that
+may influence a choice of a test to determine whether or not the diet
+has induced a change in median weight. Use what you consider the most
+appropriate method to test whether the diet has affected median weight.
+The weight change (in kg) are: \[\begin{array}
+{cccccccccc}
+-1.2 & 1.4 & 0.2 & -0.7 & -6.4 & -2.7 & -8.6 & -1.7 & -2.2\\
+0.1 & -0.4 & -4.2 & -1.6 & 1.2 & -1.3 & -2.4 & 3.1 & -0.2\\
+-4.5 & -6.3 & -1.7 & 0.0 & 0.2 & -3.7 & 1.1 & -2.3 & -0.1\\
+-7.3 & 0.2 & -1.4 & -0.9 & -2.0 & 0.0 & 1.1 & -0.3 & -1.1
+\end{array}
+\]
+
+Obtain an appropriate nominal 95 percent confidence interval for the
+median change in weight.
+
+\subsection{Exercise Twenty One}\label{exercise-twenty-one}
+
+\paragraph{Question}\label{question-20}
+
+For the data on sentence lengths in Example 3.6 use the modified van der
+Waerden scores procedure proposed in Section 3.5.2 to test the
+hypothesis \(H_0: \theta = 30\) against \(H_1: \theta > 30\)
+
+
+\end{document}

@@ -1,14 +1,20 @@
 ---
 title: "Chapter One"
 author: "Ryan B. Honea"
-output: pdf_document
-
+output:
+  pdf_document:
+    keep_tex: yes
+  html_document: default
 ---
+
+```{r include=FALSE}
+library(pander)
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
-### Exercise One
+## Exercise One
 #### Question
 As in Example 1.1, suppose that one machine produces rods with diameters normally distributed with mean 27 mm and standard deviation 1.53 mm, so that 2.5 percent of the rods have diameter 30 mm or more. A second machine is known to produce rods with diameters normally distributed with mean 24 mm and 2.5 percent of rods it produces have diameter 30 mm or more. What is the standard deviation of rods produced by the second machine?
 	
@@ -25,21 +31,23 @@ where $x$ is the value being considered. In this case, we have
 	\]
 So, the standard deviation is approximately 3.06.
 	
-### Exercise Two
+## Exercise Two
 #### Question
 In a group of 145 patients admitted to a hospital with a stroke, weekly alcohol consumption in standard units had a mean of 17 and a standard deviation of 22. Explain why their alcohol consumption does not follow a normal distribution. Is this finding surprising?
 	
 #### Solution
 In a normal distribution, approximately 68\% of the data lies between one standard deviation from the mean. Therefore, if this group were normally distributed, 68\% of the patents would have a weekly alcohol consumption of -5 units to 39 units which does not make sense as -5 units is an impossible value of weekly consumption. This is likely a right-skewed distribution which	isn't altogether surprising. Though this based on experience, I would argue the number of binge drinkers is low, but the volume of alcohol a binge drinker might consume is enough to skew the standard deviation.
 
-### Exercise Three
+\pagebreak
+
+## Exercise Three
 #### Question
 Following a television campaign about the risks of smoking tobacco, the cigarette consumption of a group of 50 smokers decreases by a mean of 5 cigarettes per day with a standard deviation of 8. Explain why the reasoning of Exercise 2 cannot be used to show that this distribution is not normal.
 
 #### Solution
 In this case, we aren't sure of the current amount of cigarettes our sample smokes. The argument of Exercise 2 relies on knowing a minimum where in this case a smokers habit could change from between -13 to +3 cigarettes a day. Even out to three standard deviations, it's completely reasonable to believe that a smoker might change -29 and +19 cigarettes a day in the most extreme of cases. There is no evidence to suggest that it isn't normal.
 
-### Exercise Four
+## Exercise Four
 #### Question
 In section 1.3, we pointed out that 5 tosses of a coin would never provide evidence against the hypothesis that a coin was fair (equally likely to fall heads or tails) at a conventional 5 percent significance level. What is the least number of tosses needed to provide such evidence using a two-tail test, and what is then the exact $P$-value.
 	
@@ -55,7 +63,9 @@ Note that this is essentially a two-tailed test.
 	
 To find the minimum number of tosses, we take the ceiling of that result which is six tosses. The exact $P$-value it would give is $P = 2 * (0.5)^6 = .03125$.
 
-### Exercise Five
+\pagebreak
+
+## Exercise Five
 #### Question
 A biased coin is such that Pr(heads) = 2/3. If this coin is tossed, the least number of times calculated in Exercise 1.4, what is the probability of an error of the second kind associated with the 5 percent significance level? What is the power of the test? Does the discrete nature of possible $P$-values cause any problems in calculating the power?	
 	
@@ -76,7 +86,9 @@ The Type II error therefore is approximately .911 while the power of the test is
 	
 The discrete nature of $P$ here causes slight problems because the typical method for calculating power would use the critical probabilities which are continuous while the number of heads is discrete. If you could observe fractions of heads, then the actual interval of heads is $(.978, 5.004)$. That being said, binomials don't work that way and so the current power of the test is the most accurate result possible and not problematic. 
 
-### Exercise Six
+\pagebreak
+
+## Exercise Six
 #### Question
 If a random variable $X_i$ is distributed N$(\mu, \sigma^2)$ and all $X_i$ are independent, it is well know that the variable
 	\[
@@ -100,17 +112,26 @@ pnorm(100, 90, sqrt(18))
 	(ii) .500, and
 	(iii) .991
 
-### Exercise Seven
+\pagebreak
+
+## Exercise Seven
 #### Question
 The following two sample data sets both have sample mean 6.
+$$\begin{array}
+{cccccccccc}
+\text{Set I} & 13.9 & 2.7 & 0.8 & 11.3 & 1.3 \\
+\text{Set II} & 2.7 & 8.3 & 5.2 & 7.1 & 6.7 \\
+\end{array}
+$$
+```{r, results = 'asis', echo=FALSE}
+columns = c("Set I", "Set II")
+setI <- c(13.9, 2.7, 0.8, 11.3, 1.3)
+setII <- c(2.7, 8.3, 5.2, 7.1, 6.7)
+df = data.frame(setI, setII)
+colnames(df) <- columns
+pander(df)
+```
 
-| Set I 	| Set II 	|
-|-------	|--------	|
-| 13.9 	| 2.7 	|
-| 2.7 	| 8.3 	|
-| 0.8 	| 5.2 	|
-| 11.3 	| 7.1 	|
-| 1.3 	| 6.7 	|
 
 If $\mu$ is the population mean, perform for each set $t$-tests of (i) $H_0: \mu = 8$ against $H_1: \mu \neq 8$ and (ii) $H_0: \mu = 10$ against $H_1: \mu \neq 10$. Do you consider the conclusions of the tests reasonable? Have you any reservations about using a $t$-test for either of these data sets?
 	
@@ -120,19 +141,42 @@ I'll address my one reservation before performing the tests. One of the assumpti
 ```{r, echo=TRUE}
 SetI <- c(13.9, 2.7, 0.8, 11.3, 1.3)
 SetII <- c(2.7, 8.3, 5.2, 7.1, 6.7)
-mu_i <- 10
-mu_ii <- 8
+mu_i <- 8
+mu_ii <- 10
 t.test(SetI, mu = mu_i)$p.value
 t.test(SetII, mu = mu_i)$p.value
 t.test(SetI, mu = mu_ii)$p.value
 t.test(SetII, mu = mu_ii)$p.value
 ```
 
-### Exercise Eight
+The only case where the $P$-value is lower than 5\% is whether SetII is different from $\mu = 10$ so we reject $H_0$ in that case. All of the others, we fail to reject the null hypothesis.
+
+\pagebreak
+
+## Exercise Eight
 #### Question
 Use an available standard statistical software package, or one of the many published tables of binomial probabilities to determine, for sample of 12 from binomial distributions with $p = 0.5$ and with $p = 0.75$, the probabilities of observing each possible number of outcomes for each of these values of $p$. In a two-tail test of the hypotheses, $H_0: p = 0.5$ against $H_1: p = 0.75$ what is the largest attainable $P$-value less than 0.05? What is the critical region for a test based on this $P$-value? What is the power of the test?
+
 #### Solution
+Below is the table representing the number of successes or each possible number of outcomes. 
+```{r, results = 'asis', echo=FALSE}
+columns = c("Outcomes", "50%", "75%")
+success <- c(0:12)
+prob50 <- c()
+prob75 <- c()
+for (i in 1:13) {
+  prob50[i] <- dbinom(i-1, size = 12, prob = 0.50)
+  prob75[i] <- dbinom(i-1, size = 12, prob = 0.75)
+}
+df = data.frame(success, prob50, prob75)
+colnames(df) <- columns
+pander(df)
+```
+Based on these p-values, we can see that the $P$-values less than 0.5 are 0 to 2 and 10 to 12. The sum of these is approximately 0.0386, i.e. our max $P$-value. The power of our test would be obtaining a result within this critical region, or 1 minus the probability of obtaining a result outside of it.
 
+```{r, echo=TRUE}
+1 - (pbinom(9, size = 12, prob = 0.75) - 
+       pbinom(2, size = 12, prob = 0.75))
+```
 
-
-
+So the power of this test is approximately 0.391
