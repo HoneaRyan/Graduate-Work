@@ -1,0 +1,53 @@
+---
+title: "Proofs"
+author: "Ryan Honea"
+date: "8/31/2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Theorem One
+
+The limiting distribution of the Poisson$(\lambda)$ distribution as $\lambda \rightarrow \infty$ is normal.
+
+**Pf.** 
+Let $X \sim Poisson(\lambda)$ which has the probablility mass function 
+\[
+f_{X}(x) = \frac{\lambda^xe^{-\lambda}}{x!} \quad \quad x = 0,1,2,...
+\] and moment generating function
+\[
+\text{M}_X(t) = e^{e^{\lambda(e^t - 1)}}
+\]
+We will specifically consider the standardized Poisson random variable $X$ 
+\[
+\frac{X-\lambda}{\sqrt{\lambda}}
+\]
+which has the Moment Generating Function
+\begin{align*}
+\text{M}_{(X-\lambda)/\sqrt{\lambda}}(t)&= \text{E}\left[\exp\left({t*\frac{X-\lambda}{\sqrt{\lambda}}}\right)\right]\\
+&= \exp(-t\sqrt{\lambda})*\text{E}\left[\exp\left(\frac{tX}{\sqrt{\lambda}}\right)\right]\\
+&= \exp\left(-t\sqrt{\lambda}+\lambda(e^{t/\sqrt{\lambda}} - 1)\right)
+\end{align*}
+
+Now, we take the limit as $\lambda$ approaches $\infty$ and utilize the taylor series expansion
+\[
+e^{t/\sqrt{\lambda}} = 1 + t\lambda^{-1/2} + \frac{t^2\lambda^{-1}}{2!} + \frac{t^3\lambda^{-3/2}}{3!} + ... + \frac{t^n\lambda^{-n/2}}{n!}
+\]
+Therefore, we have
+\begin{align*}
+\text{M}_{(X-\lambda)/\sqrt{\lambda}}(t) &=\exp\left(-t\sqrt{\lambda}+\lambda(e^{t/\sqrt{\lambda}} - 1)\right)\\
+ & =\exp\left(-t\sqrt{\lambda}+\lambda \left[ 1 + t\lambda^{-1/2} + \frac{t^2\lambda^{-1}}{2!} + \frac{t^3\lambda^{-3/2}}{3!} + ... +  \frac{t^n\lambda^{-n/2}}{n!} - 1\right] \right)\\
+ & = \exp\left(-t\sqrt{\lambda} + t\sqrt{\lambda} + \frac{t^2}{2} + \frac{t^3\lambda^{-1/2}}{6} + ... + \frac{t^n\alpha^{-(n-1)/2}}{n!}  
+\right)
+\end{align*}
+
+To find the limiting moment generating function, we take the limit of this moment generating function as $\lambda \rightarrow \infty$ which results in
+\[
+\exp\left(\frac{t^2}{2}\right)
+\]
+which is the moment generating function of N$(0,1)$.
