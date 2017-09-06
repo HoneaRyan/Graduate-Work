@@ -10,6 +10,7 @@ tables: true
 
 ```{r include=FALSE}
 library(pander)
+library(nortest)
 ```
 
 ```{r setup, include=FALSE}
@@ -22,7 +23,7 @@ Genetically similar seeds are randomly assigned to be raised in either a nutriti
 \begin{center}
 \begin{tabular}{@{}cccc@{}}
 \toprule
-\multicolumn{2}{l}{Treatment Group} & \multicolumn{2}{l}{Control Group} \\ \midrule
+\multicolumn{2}{c}{Treatment Group} & \multicolumn{2}{c}{Control Group} \\ \midrule
 4.81             & 5.36             & 4.17            & 4.66            \\
 4.17             & 3.48             & 3.05            & 5.58            \\
 4.41             & 4.69             & 5.18            & 3.66            \\
