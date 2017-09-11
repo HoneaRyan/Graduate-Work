@@ -267,7 +267,7 @@ t.test(before, after)
 
 **(b):** Let $D_k = Y_{1k} - Y_{2k}$, for $k = 1,...,20$. Formulate models for testing $H_0$ against $H_1$ using the $D_k$'s. Using analogous methods to Exercise 2.1 above, assuming $\sigma^2$ is a known constant, test $H_0$ against $H_1$.
 
-Unsure where to go from here.
+Unsure of where to go from here.
 
 **(c):** The analysis in (b) is a paired t-test which uses the natural relationship between weights of the *same* person before and after the program. Are the conclusions the same from (a) and (b)?
 
@@ -278,6 +278,7 @@ Unsure where to go from here.
 Unsure where to go from here.
   
 \pagebreak
+
 ## Exercise Three
 #### Question
   For model (2.7) for the data on birthweight and gestational age, using methods similar to those for Exercise 1.4, show
@@ -294,7 +295,68 @@ b_j &\sim \text{N}(\beta_j, \sigma^2/(\sum_{k=1}^K x_{jk}^2 - K\overline{x^2_j})
 
 
 #### Solution
+We begin by showing the equivelance, but will first note some terms and identities of importance.
 
+\[
+\mu_{jk} = \alpha_j + \beta_jx_{jk} \quad \quad \sum_{k=1}^KY_{jk} = K\overline{Y_j} \quad\quad \overline{Y_j} = a_j + b_jx_{jk}
+\]
+
+Now, our final result uses $\alpha_j$ and $\beta_j$ so we need a term that uses these, and so we add $-\mu_{jk} + \mu_{jk}$ to the left hand side.
+\begin{align*}
+& \sum_{j=1}^J\sum_{k=1}^K(Y_{jk} - \mu_{jk} + \mu_{jk} - a_j - b_jx_{jk})^2, \quad A = Y_{jk} - \mu_{jk}, \quad B = \mu_{jk} - a_j - b_jx_{jk}\\
+= & \sum_{j=1}^J\sum_{k=1}^K(A+B)^2\\
+= & \sum_{j=1}^J\sum_{k=1}^KA^2 + 2AB + B^2
+\end{align*}
+Note that $A^2$ is equal to the first term of the right hand side of the equation (because $A^2 = (Y_{jk} - \mu_{jk})^2 = (Y_{jk} - (\alpha_j + \beta_jx_{jk}))^2$. So, we need to show that $2AB + B^2$ is equal to the remaining two terms.
+
+\begin{align*}
+2AB       &= 2(Y_{jk} - \mu_{jk})(\mu_{jk} - a_j - b_jx_{jk})\\
+          &= 2Y_{jk}\mu_{jk} - 2Y_{jk}a_j - 2Y_{jk}b_jx_{jk} - 2\mu_{jk}^2 + 2\mu_{jk}a_j + 2b_jx_{jk}\mu_{jk})\\
+B^2       &= (\mu_{jk} - a_j - b_jx_{jk})(\mu_{jk} - a_j - b_jx_{jk})\\
+          &= \mu_{jk}^2 - a_j\mu_{jk} - b_jx_{jk}\mu_{jk} - a_j\mu_{jk} + a_j^2 + a_jb_jx_{jk} - b_jx_{jk}\mu_{jk} + a_jb_jx_{jk} + b_j^2x_{jk}^2\\
+          &= \mu_{jk}^2 - 2a_j\mu_{jk} - 2b_jx_{jk}\mu_{jk} + 2a_jb_jx_{jk} + a_j^2 + b_j^2x_{jk}^2\\
+2AB + B^2 &= 2Y_{jk}\mu_{jk} - 2Y_{jk}a_j - 2Y_{jk}b_jx_{jk} - \mu_{jk}^2 + 2a_jb_jx_{jk} + a_j^2 + b_j^2x_{jk}^2\\
+          &= 2Y_{jk}\alpha_j + 2Y_{jk}\beta_jx_{jk} - 2Y_{jk}a_j - 2Y_{jk}b_jx_{jk} - \alpha_j^2 - 2\alpha_j\beta_jx_{jk} - \beta_j^2x_{jk}^2 + 2a_jb_jx_{jk} + a_j^2 + b_j^2x_{jk}^2
+\end{align*}
+
+From this point, a majority of the terms in $2AB + B^2$ can be simplified using the identities noted in the beginning. However, the lack of a method to handle terms like $\sum_{j=1}^J\sum_{k=1}^K x_{jk}Y_{jk}$ remains a problem for simplifying our terms. We utilize normal equations on Page 26 (3rd ed) to find a substitution for $\sum_{j=1}^J\sum_{k=1}^K x_{jk}Y_{jk}$.
+
+\begin{align*}
+& & b_j &= \dfrac{K\sum_K x_{jk}Y_{jk} - (\sum_Kx_{jk})(\sum_KY_{jk})}{K\sum_Kx_{jk}^2 - (\sum_Kx_{jk})^2}\\
+& \implies & b_j(K\sum_Kx_{jk}^2 - (\sum_Kx_{jk})^2) &= K\sum_K x_{jk}Y_{jk} - (\sum_Kx_{jk})(\sum_KY_{jk})\\
+& \implies & K\sum_K x_{jk}Y_{jk} &= b_j(K\sum_Kx_{jk}^2 - (\sum_Kx_{jk})^2) + (\sum_Kx_{jk})(\sum_KY_{jk})\\
+& \implies & K\sum_K x_{jk}Y_{jk} &= b_j(K\sum_Kx_{jk}^2 - K^2\overline{x_{j}}) + K^2\overline{x_j}\overline{Y_j}\\
+& \implies & \sum_K x_{jk}Y_{jk}  &= b_j(\sum_Kx_{jk}^2 - K\overline{x_{j}}) + K\overline{x_j}\overline{Y_j}
+\end{align*}
+
+With this information, we can attempt to obtain our desired result.
+
+\begin{align*}
+=& \sum_{j=1}^J\sum_{k=1}^K(2AB + B^2) \\
+=& \sum_{j=1}^J\sum_{k=1}^K2Y_{jk}\alpha_j + 2Y_{jk}\beta_jx_{jk} - 2Y_{jk}a_j - 2Y_{jk}b_jx_{jk} - \alpha_j^2 - 2\alpha_j\beta_jx_{jk} - \beta_j^2x_{jk}^2 + 2a_jb_jx_{jk} + a_j^2 + b_j^2x_{jk}^2\\
+=& \sum_{j=1}^J [2K\overline{Y_j}\alpha_j - 2K\overline{Y_j}a_j - 2K\alpha_j\beta_j\overline{x_j} + 2Ka_jb_j\overline{x_j} - K\alpha_j^2 + Ka_j^2 + 2K\overline{Y_j}\beta_j\overline{x_j} - 2K\overline{Y_j}\beta_j\overline{x_j}\\
+ &+ 2\beta_jb_j(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - 2b_j^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - \beta_j^2x_{jk}^2 + b^2x_{jk}^2 ]\\
+=& \sum_{j=1}^J [2K\overline{Y_j}\alpha_j - 2K\overline{Y_j}a_j - 2K\alpha_j\beta_j\overline{x_j} + 2Ka_jb_j\overline{x_j} - K\alpha_j^2 + Ka_j^2 + 2K\overline{Y_j}\beta_j\overline{x_j} - 2K\overline{Y_j}\beta_j\overline{x_j}\\
+ &+ 2\beta_jb_j(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - 2b_j^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - \beta_j^2x_{jk}^2 + b^2x_{jk}^2 ]
+\end{align*}
+
+If we add the following zero term to the above equation
+$$Kb^2\overline{x_j}^2 - Kb^2\overline{x_j}^2 + K\beta^2\overline{x_j}^2 - K\beta^2\overline{x_j}^2$$
+then much of the problem can be reduced.
+
+\begin{align*}
+=& K\sum_{j=1}^J \left[2\overline{Y_j}\alpha_j - 2\overline{Y_j}a_j - 2\alpha_j\beta_j\overline{x_j} + 2a_jb_j\overline{x_j} - \alpha_j^2 + a_j^2 + 2\overline{Y_j}\beta_j\overline{x_j} - 2\overline{Y_j}\beta_j\overline{x_j} - K\beta^2\overline{x_j}^2 + Kb^2\overline{x_j}^2 \right]\\
+ &+ \sum_{j=1}^J \left[2\beta_jb_j(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - 2b_j^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - \beta_j^2x_{jk}^2 + b_j^2x_{jk}^2 - Kb_j^2\overline{x_j}^2 + K\beta_j^2\overline{x_j}^2\right]\\
+=& K\sum_{j=1}^J \left[2K\overline{Y_j}\alpha_j + 2\overline{Y_j}\beta_j\overline{x_j} - 2\overline{Y_j}(\alpha_j + \beta_j\overline{x_j}) - \alpha_j^2 - 2\alpha_j\beta_j\overline{x_j} - \beta_j^2\overline{x_j}^2 + (\alpha_j + \beta_j\overline{x_j})^2    \right]\\
+ &+ \sum_{j=1}^J \left[-b_j^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) -2b_j\beta_j(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2) - \beta^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2)    \right]\\
+=& -K\sum_{j=1}^J \left[ \overline{Y_j}^2 - 2\alpha_j\overline{Y_j} - 2\beta_j\overline{x_j}\overline{Y_j} + 2\alpha_j\beta_j\overline{x_j} + \alpha_j^2 + \beta_j^2\overline{x_j}^2 \right]\\
+ &- \sum_{j=1}^J \left[(b_j - \beta_j)^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2)\right]\\
+=& -K\sum_{j=1}^J(\overline{Y_j} - \alpha_j - \beta_j\overline{x_j})^2\\
+ &- \sum_{j=1}^J \left[(b_j - \beta_j)^2(\sum_{k=1}^Kx_{jk}^2 - K\overline{x_j}^2)\right]\\
+\end{align*}
+So we have shown that they are equal.
+
+In regards to showing how they are distributed, we can recognize that $\hat{S_1}/\sigma^2$ is now the sum of three $\chi^2$ random variables. So, as the three are also $\chi^2$ random variables with behavior similar to residuals, then the variables within the square behave normally.
 
 ## Exercise Four
 Suppose you have the following data:

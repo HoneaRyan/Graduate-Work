@@ -1,0 +1,44 @@
+---
+title: "Sign Test on Paired data"
+author: "Ryan Honea"
+date: "9/6/2017"
+output: 
+  beamer_presentation:
+    theme: "Warsaw"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(MASS)
+library(BSDA)
+```
+
+## Introduction
+
+* Reduces paired data into binomial information of +/-
+* Less powerful than Wilcox Ranked Sign
+* Should probably use Wilcox Ranked Sign instead, but this is easier on paper
+
+## Data Set
+We will use the immer data set which describes the yield of barley field from one year to the next year
+```{r}
+data(immer)
+head(immer)
+```
+
+## Using the sign test
+* To test this numerically, instead of counting +'s and -'s, it's easier to just test against a median of zero
+```{r, echo = TRUE}
+diff <- immer[,4] - immer[,3]
+sign_test <- SIGN.test(diff, md = 0.0)
+cat("P-Value is", sign_test$p.value, 
+    "with true median at", sign_test$estimate)
+```
+
+## Wilcox Example
+* Testing with Wilcox to see difference in values
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+wilcox_test <- wilcox.test(immer[,3], immer[,4])
+cat("P-Value for Wilcox Sign Rank Test is",
+    wilcox_test$p.value)
+```

@@ -1,0 +1,95 @@
+---
+title: "Exercises"
+author: "Ryan Honea"
+date: "9/8/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise One
+On the basis of the following random sample of pairs:
+
+\begin{center}
+\begin{tabular}{c|cccccccc}
+X & 126 & 131 & 153 & 125 & 119 & 102 & 116 & 163 \\
+Y & 120 & 126 & 152 & 129 & 102 & 105 & 100 & 175 \\
+\end{tabular}
+\end{center}
+
+Test at a significance level not exceeding 0.10 the null hypothesis $H_0: M = 2$ against the alternative $H_1: M \neq 2$, where $M$ is the median of the continuous and symmetric population of difference $D = X - Y$. Compute the exact probability of type 1 error.
+
+#### Solution
+```{r, echo = TRUE}
+X <- c(126, 131, 153, 125, 119, 102, 116, 163)
+Y <- c(120, 126, 152, 129, 102, 105, 100, 175)
+D <- X - Y
+```
+
+Because the population of $D$ is continuous and symmetric, the Wilcox Signed Rank test will perform stronger than the simple signed test.
+```{r, echo = TRUE, warning = FALSE}
+results <- wilcox.test(D, mu = 2)
+cat("P-value for Wilcox test with mu/median = 2 is", results$p.value, "\n")
+```
+
+The results of this test, that is a $p$-value of .3828 leads us to fail to reject the null hypothesis, that is $M = 2$.
+
+I will, however, also manually compute the $p$-value of the simple sign test and it's Type I error. 
+```{r, echo = TRUE}
+successes <- length(D[D > 2])
+p <- 2*min(pbinom(4,8,.5),pbinom(8,8,.5) - pbinom(3,8,.5))
+cat("The p-value for the sign test is",p)
+```
+
+Obviously that p-value is impossible, but it is occurring due to overlap. So, the true $p$-value for the sign-test is 1 which leads us to fail to reject. We can find the probability of Type I error by finding the probability that we observe a value of successes that would lead us to reject the null hypothesis. Below gives the probabilies of observing various results for different numbers of successes.
+
+```{r, echo = TRUE}
+for (i in 0:8) {
+  cat("The probability of", i, "successes is", dbinom(i,8,.5),"\n")
+}
+```
+
+The values that would lead to rejecting the null hypothesis at a level of .10 are 0, 1, 7, and 8.
+
+```{r, echo = TRUE}
+typeI <- 1 - (pbinom(6,8,.5) - pbinom(1,8,.5))
+cat("The probability of Type I Error is", typeI, "\n")
+```
+
+## Exercise Two
+Recent studies of the private practices of physicians who saw no Medicaid patients suggested that the median length of each patient visit was 22 minutes. It is believed that the median visit length in practices with a large Medicaid load is shorter than 22 minutes. A random sample of 20 visits in practices with a large Medicaid load yielded, in order, the following visit lengths:
+\begin{center}
+\begin{tabular}{cccccccccc}
+9.4  & 13.4 & 15.6 & 16.2 & 16.4 & 16.8 & 18.1 & 18.7 & 18.9 & 19.1\\
+19.3 & 20.1 & 20.4 & 21.6 & 21.9 & 23.4 & 23.5 & 24.8 & 24.9 & 26.8
+\end{tabular}
+\end{center}
+Based on these data, is there sufficient evidence to conclude that the median visit length in practices with a large Medicaid load is shorter than 22 minutes?
+
+
+
+## Exercise Three
+A psychologist claims that the numebr of repeat offenders will decrease if first time offenders complete a particular rehabilitation course. You randomly select 10 prisons and record the number of repeat offenders during a two-year period. Then, after first-time offenders complete the course, you record the number of repeat offenders at each prison for another two-year period. The results are shown in the following table. At 0.05 significance level, can you support the psychologist's claim?
+
+\begin{center}
+\begin{tabular}{lcccccccccc}
+Prison & 1  & 2  & 3  & 4  & 5  & 6  & 7  & 8  & 9  & 10 \\
+Before & 21 & 34 & 9  & 45 & 30 & 54 & 37 & 36 & 33 & 40 \\
+After  & 19 & 22 & 16 & 31 & 21 & 30 & 22 & 18 & 17 & 21
+\end{tabular}
+\end{center}
+
+
+
+
+## Exercise Four
+Develop a hypothesis test procedure for testing a 3rd Quantile (Q3). Also find a method to build confidence interval for Q3.
+
+
+
+## Exercise Five
+To test $H_0: M = M_0$ vs. $H_a: M > M_0$, plot the approximate (Normal Approximation) power function (as a function of the $p = P(X > M_0 | H_a)$ for sign test. From the power function, also compute a sample size determination formula. Plot that function agaisnt sample size $n$ when $p = 0.2$.

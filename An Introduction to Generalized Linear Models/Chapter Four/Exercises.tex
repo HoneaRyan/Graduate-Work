@@ -1,0 +1,198 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Chapter Four},
+            pdfauthor={NAME HERE},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Chapter Four}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{NAME HERE}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \date{}
+  \predate{}\postdate{}
+
+\usepackage{bbm}
+\usepackage{bm}
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise One}\label{exercise-one}
+
+\paragraph{Question}\label{question}
+
+The data in Table the table below show the numbers of cases of AIDS in
+Australia by date of diagnosis for successive 3-months periods from 1984
+to 1988. (Data from National Centre for HIV Epidemiology and Clinical
+Research 1994.)
+
+In this early phase of the epidemic, the numbers of cases seemed to be
+increasing exponentially.
+
+\begin{center}
+\begin{tabular}{@{}crrrr@{}}
+\toprule
+     & \multicolumn{4}{c}{Quarter} \\
+Year & 1     & 2     & 3    & 4    \\ \midrule
+1984 & 1     & 6     & 16   & 23   \\
+1985 & 27    & 39    & 31   & 30   \\
+1986 & 43    & 51    & 63   & 70   \\
+1987 & 88    & 97    & 91   & 104  \\
+1988 & 110   & 113   & 149  & 159  \\ \bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Solutions}\label{solutions}
+
+\textbf{(a)}: Plot the number of cases \(y_i\) against time period \(i\)
+(\(i = 1,...,20\)).
+
+\textbf{(b)}: A possible model is the Poisson distribution with
+parameter \(\lambda_i = i^\theta\), or equivelantly \[
+\log\lambda_i = \theta\log i.
+\] Plot \(\log y_i\) against \(\log i\) to examine this model.
+
+\textbf{(c)}: Fit a gneralized linear model to these data using the
+Poisson distribution, the log-link function and the equation \[
+g(\lambda_i) = \log\lambda_i = \beta_1 + \beta_2x_i,
+\] where \(x_i = \log i\). Firstly, do this from first principles,
+working out expressions for the weight matrix \(\bm{W}\) and other terms
+needed for the iterative equation \[
+\bm{X}^T\bm{WXb}^{(m)} = \bm{X}^T\bm{Wz}
+\] and using software which can perform matrix operations to carry out
+the calculations.
+
+\textbf{(d)}: Fit the model in (c) using statistical software which can
+perform Poisson regression. Compare the results with those obtained in
+(c).
+
+\pagebreak
+
+\subsection{Exercise Two}\label{exercise-two}
+
+\paragraph{Question}\label{question-1}
+
+The data in the table below are times to death, \(y_i\), in weeks from
+diagnosis and \(\log_{10}\)(initial white blood cell count), \(x_i\),
+for seventeen patients suffering from leukemia. (This is Example U from
+Cox and Snell 1981.)
+
+\begin{center}
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{My caption}
+\label{my-label}
+\begin{tabular}{@{}crrrrrrrrr@{}}
+\toprule
+$y_i$ & 65   & 156  & 100  & 134  & 16   & 108  & 121  & 4    & 39   \\
+$x_i$ & 3.36 & 2.88 & 3.63 & 3.41 & 3.78 & 4.02 & 4.00 & 4.23 & 3.73 \\
+      &      &      &      &      &      &      &      &      &      \\
+$y_i$ & 143  & 56   & 26   & 22   & 1    & 1    & 5    & 65   &      \\
+$x_i$ & 3.85 & 3.97 & 4.51 & 4.54 & 5.00 & 5.00 & 4.72 & 5.00 &      \\ \bottomrule
+\end{tabular}
+\end{table}
+\end{center}
+
+\paragraph{Solutions}\label{solutions-1}
+
+\textbf{(a)}: Plot \(y_i\) against \(x_i\). Do the data show any trends?
+
+\textbf{(b)}: A possible specification for \(E(Y)\) is \[
+\text{E}(Y_i) = \exp(\beta_1 + \beta_2x_i),
+\] which can ensure all E\((Y)\) is non-negative for lall values of the
+paramaters and all values of \(x\). Which link functio is appropriate in
+this case?
+
+\textbf{(c)}: The Exponential distribution is ofte used to describe
+survival times. The probability distribution is
+\(f(y; \theta) = \theta e^{-y\theta}\). This is a sepcial case of the
+Gamma distribution with shape parameters \(\phi = 1\) (see Exercise
+3.12(a)). Show that E\((Y) = 1/\theta\) and var\((Y) = 1/\theta^2\).
+
+\textbf{(d)}: Fit a model with the equation for E\((Y_i)\) given in (b)
+and the Exponential distribution using appropriate statistical software.
+
+\textbf{(e)}: For the model fitted in (d), compare the observed values
+\(y_i\), and fitted values
+\(\hat{y_i} = \exp(\hat{\beta_1} + \hat{\beta_2}x_i),\) and use the
+standardized residuals \(r_i = (y_i - \hat{y_i})/\hat{y_i}\) to
+investigate the adequacy of the model. (Note: \$hat\{y\_i\}\$ is used as
+the denominator of \(r_i\) because it is an estimate of the standard
+deviation of \(Y_i\)--see (c) above.)
+
+
+\end{document}
