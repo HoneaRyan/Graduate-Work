@@ -1,6 +1,6 @@
 ---
 title: "Chapter Four"
-author: "NAME HERE"
+author: "Ryan Honea"
 header-includes:
    - \usepackage{bbm}
    - \usepackage{bm}
@@ -62,6 +62,12 @@ and using software which can perform matrix operations to carry out the calculat
 The data in the table below are times to death, $y_i$, in weeks from diagnosis and $\log_{10}$(initial white blood cell count), $x_i$, for seventeen patients suffering from leukemia. (This is Example U from Cox and Snell 1981.)
 
 \begin{center}
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{My caption}
+\label{my-label}
 \begin{tabular}{@{}crrrrrrrrr@{}}
 \toprule
 $y_i$ & 65   & 156  & 100  & 134  & 16   & 108  & 121  & 4    & 39   \\
@@ -70,6 +76,7 @@ $x_i$ & 3.36 & 2.88 & 3.63 & 3.41 & 3.78 & 4.02 & 4.00 & 4.23 & 3.73 \\
 $y_i$ & 143  & 56   & 26   & 22   & 1    & 1    & 5    & 65   &      \\
 $x_i$ & 3.85 & 3.97 & 4.51 & 4.54 & 5.00 & 5.00 & 4.72 & 5.00 &      \\ \bottomrule
 \end{tabular}
+\end{table}
 \end{center}
 
 #### Solutions

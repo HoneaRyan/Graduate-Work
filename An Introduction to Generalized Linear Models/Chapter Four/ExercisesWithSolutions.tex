@@ -25,7 +25,7 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Chapter Four},
-            pdfauthor={NAME HERE},
+            pdfauthor={Ryan Honea},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -77,7 +77,7 @@
   \title{Chapter Four}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-  \author{NAME HERE}
+  \author{Ryan Honea}
   \preauthor{\centering\large\emph}
   \postauthor{\par}
   \date{}
@@ -150,6 +150,12 @@ for seventeen patients suffering from leukemia. (This is Example U from
 Cox and Snell 1981.)
 
 \begin{center}
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\centering
+\caption{My caption}
+\label{my-label}
 \begin{tabular}{@{}crrrrrrrrr@{}}
 \toprule
 $y_i$ & 65   & 156  & 100  & 134  & 16   & 108  & 121  & 4    & 39   \\
@@ -158,6 +164,7 @@ $x_i$ & 3.36 & 2.88 & 3.63 & 3.41 & 3.78 & 4.02 & 4.00 & 4.23 & 3.73 \\
 $y_i$ & 143  & 56   & 26   & 22   & 1    & 1    & 5    & 65   &      \\
 $x_i$ & 3.85 & 3.97 & 4.51 & 4.54 & 5.00 & 5.00 & 4.72 & 5.00 &      \\ \bottomrule
 \end{tabular}
+\end{table}
 \end{center}
 
 \paragraph{Solutions}\label{solutions-1}
