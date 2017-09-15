@@ -97,7 +97,7 @@ to verify the following results:
 #### Solutions
 **(a)**: For $Y \sim \text{Po}(\theta)$, E$(Y) = \text{var}(Y) = \theta$.
 
-*Solutions: * The canonical form of the Poisson distribution is the following:
+*Solution: * The canonical form of the Poisson distribution is the following:
 $$\exp[y\log\theta - \theta - \log y!]$$
 where $a(y) = y$, $b(\theta) = \log\theta$, $c(\theta) = -\theta$, and $d(y) = -\log y!$.
 
@@ -112,7 +112,7 @@ Because this is in canonical form, $\text{E}[y] = \text{E}[a(y)]$.
 
 **(b)**: For $Y \sim \text{N}(\mu, \sigma^2), \text{E}(Y) = \mu \text{ and var}(Y) = \sigma^2$.
 
-The canonical form of the normal distribution is
+*Solution: * The canonical form of the normal distribution is
 $$
 \exp\left[-\frac{y^2}{2\sigma^2} + \frac{y\mu}{\sigma^2} - \frac{\mu^2}{2\sigma^2} - \frac{1}{2}\log(2\pi\sigma^2)   \right]
 $$
@@ -127,7 +127,7 @@ Because this is in canonical form, $\text{E}[y] = \text{E}[a(y)]$.
 \end{align*}
 **(c)**: For $Y \sim \text{Bin}(n, \pi), \text{E}(Y) = n\pi \text{ and var}(Y) = n\pi(1 - \pi)$
 
-*Solutions: * The canonical form of the Binomial distribution is 
+*Solution: * The canonical form of the Binomial distribution is 
 $$
 \exp\left[y\log\left(\frac{\pi}{1-\pi}\right) + n\log(1-\pi) + \log\binom{n}{y}\right]
 $$
@@ -146,7 +146,7 @@ where $a(y) = y, b(\pi) = \log\left(\frac{\pi}{1-\pi}\right), c(\pi) = n\log(1-\
 #### Questions and Solutions
 **(a)**: For a Negative Binomial distribution $Y \sim \text{NBin}(r, \theta)$, find E$(Y)$ and var$(Y)$.
 
-*Solutions: * The canonical form of the binomial distribution is listed in Exercise Three.
+*Solution: * The canonical form of the binomial distribution is listed in Exercise Three.
 
 \begin{align*}
 \text{E}[y] &= \frac{-c'(\theta)}{b'(\theta)} & \text{var}[y] &= \dfrac{b''(\theta)c'(\theta) - c''(\theta)b'(\theta)}{[b'(\theta)]^3}\\
@@ -160,7 +160,7 @@ where $a(y) = y, b(\pi) = \log\left(\frac{\pi}{1-\pi}\right), c(\pi) = n\log(1-\
 
 
 
-*Solutions: *
+*Solution: * Knowing that these responses can lead to different degrees of scattering from the variance, one could select proper link functions to minimize variance that might negatively affect your model.
 
 \pagebreak
 
@@ -174,6 +174,8 @@ where $y_i = 0$ or 1.
 
 #### Solutions
 **(a)**: Show that this probability function belongs to the exponential family of distributions.
+
+*Solution: * 
 
 \begin{align*}
 f(y_i; \pi_i) &= \pi_i^{y_i} (1 - \pi_i)^{1 - y_i}\\
@@ -189,13 +191,19 @@ where $a(y_i) = y_i, b(\pi_i) = \log\left(\frac{\pi_i}{1-\pi_i}\right), c(\pi_i)
 $$\log \left(\frac{\pi_i}{1 - \pi_i}\right).$$
 This function, the logarithm of the **odds** $\pi_i/(1 - \pi_i)$, is called the **logit** function.
 
+*Solution: * 
+
 By definition, $b(\pi_i)$ is the natural parameter and it is shown above.
 
 **(c)**: Show that E$(Y_i) = \pi_i$.
 
+*Solution: * 
+
 \begin{align*}
 \text{E}[y] &= \frac{-c'(\pi_i)}{b'(\pi_i)}\\
-            &= \frac{(1/(1-\pi_i)}{1/(\pi_i-pi_i^2)}\\
+            &= \frac{(1/(1-\pi_i)}{1/(\pi_i-\pi_i^2)}\\
+            &= \frac{\pi_i(1-\pi_i)}{1-\pi_i}\\
+            &= \pi_i
 \end{align*}
 
 **(d)**: If the link function is
@@ -203,12 +211,35 @@ $$g(\pi) = \log\left( \frac{\pi}{1-\pi} \right) = \vec{x}^T\vec{\beta},$$
 show that this is equivalent to modelling the probability $\pi$ as
 $$\pi = \frac{e^{\vec{x}^T\vec{\beta}}}{1 + e^{\vec{x}^T\vec{\beta}}}.$$
 
+*Solution: * 
+
+\begin{align*}
+& & \log\left( \frac{\pi}{1-\pi} \right) &= \vec{x}^T\vec{\beta}\\
+\implies & & \frac{\pi}{1-\pi} &= \exp[\vec{x}^T\vec{\beta}]\\
+\implies & & \pi &= \exp[\vec{x}^T\vec{\beta}] - \pi(\exp[\vec{x}^T\vec{\beta}])\\
+\implies & & \pi + \pi(\exp[\vec{x}^T\vec{\beta}]) &= \exp[\vec{x}^T\vec{\beta}]\\
+\implies & & \pi(1 + \exp[\vec{x}^T\vec{\beta}]) &= \exp[\vec{x}^T\vec{\beta}]\\
+\implies & & \pi &= \dfrac{\exp[\vec{x}^T\vec{\beta}]}{(1 + \exp[\vec{x}^T\vec{\beta}])}\\
+\implies & & \pi &= \frac{e^{\vec{x}^T\vec{\beta}}}{1 + e^{\vec{x}^T\vec{\beta}}}.
+\end{align*}
+
 **(e)**: In the particular case where $\vec{x}^T\vec{\beta} = \beta_1 + \beta_2x$, this gives
 $$\pi = \frac{e^{\beta_1 + \beta_2x}}{1 + e^{\beta_1 + \beta_2x}},$$
 which is the **logistic function**.
 
 Sketch the graph of $\pi$ against $x$ in this case, taking $\beta_1$ and $\beta_2$ as constants. How would you interpret this graph if $x$ is the dose of an insecticide and $\pi$ is the probability of an insect dying?
 
+*Solution: * 
+
+I'll "sketch" the graph in R.
+```{r, echo = TRUE}
+curve(exp(x)/(1+exp(x)), -10, 10, n = 2000, add = FALSE, type = "l",
+      ylab = NULL, log = NULL)
+```
+
+Essentially, what this means is that as there is no need for an insane amount of pesticide because there is clearing a ceiling at which given some x, the logistic link is approximately 1. The speed at which this occurs is obviously different for different $\vec{\beta}$. In this case, $\beta_1 = 0, \beta_2 = 1$.
+
+\pagebreak
 
 ## Exercise Twelve
 #### Questions and Solutions
@@ -216,7 +247,28 @@ Sketch the graph of $\pi$ against $x$ in this case, taking $\beta_1$ and $\beta_
 
 **(a)**: Show that the Exponential distribution Exp$(\theta)$ is a special case of the Gamma distribution G$(\alpha, \beta)$.
 
-**(b)**: If $X$ has the Uniford Distribution U$[0,1]$ that is, $f(x) = 1$ for $0 < x < 1$, show that $Y = -\theta \log X$ has the distribution Exp$(\theta)$.
+*Solution: * The exponential distribution is $\text{Gamma}(1, 1/\theta)$.
+
+\begin{align*}
+G[\alpha, \beta] &= \frac{1}{\Gamma(\alpha)\beta^\alpha}x^{\alpha-1}e^{-x/\beta}\\
+G[1, 1/\theta] &= \frac{1}{\Gamma(1)(1/\theta)^1}x^{1-1}e^{-x/(1/\theta)}\\
+                &= \frac{1}{\theta^{-1}}x^0e^{-x\theta}\\
+                &= \theta e^{-\theta x}\\
+                &= \text{Exp}[\theta]
+\end{align*}
+
+**(b)**: If $X$ has the Uniform Distribution U$[0,1]$ that is, $f(x) = 1$ for $0 < x < 1$, show that $Y = -\theta \log X$ has the distribution Exp$(\theta)$.
+
+*Solution: * 
+\begin{align*}
+\text{Exp}[\theta] &= \frac{1}{\theta} e^{- x/\theta}\\
+X \sim \text{U}[0,1] &= 1\\
+Y &= -\theta \log X\\
+\implies X &= e^{-Y/\theta}\\
+\frac{dX}{dY} &= \frac{-1}{\theta}e^{-Y/\theta}\\
+f_Y(y) &= f_X(X)\left|\frac{dX}{dY}\right|\\
+f_Y(y) &= \frac{1}{\theta}e^{-Y/\theta}\\
+\end{align*}
 
 **(c)**: Use the moment generating functions (or other methods) to show
 

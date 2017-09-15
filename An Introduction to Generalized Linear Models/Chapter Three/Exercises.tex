@@ -29,6 +29,46 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -210,7 +250,7 @@ Use results \[
 \textbf{(a)}: For \(Y \sim \text{Po}(\theta)\),
 E\((Y) = \text{var}(Y) = \theta\).
 
-\emph{Solutions: } The canonical form of the Poisson distribution is the
+\emph{Solution: } The canonical form of the Poisson distribution is the
 following: \[\exp[y\log\theta - \theta - \log y!]\] where \(a(y) = y\),
 \(b(\theta) = \log\theta\), \(c(\theta) = -\theta\), and
 \(d(y) = -\log y!\).
@@ -227,7 +267,7 @@ Because this is in canonical form, \(\text{E}[y] = \text{E}[a(y)]\).
 \textbf{(b)}: For
 \(Y \sim \text{N}(\mu, \sigma^2), \text{E}(Y) = \mu \text{ and var}(Y) = \sigma^2\).
 
-The canonical form of the normal distribution is \[
+\emph{Solution: } The canonical form of the normal distribution is \[
 \exp\left[-\frac{y^2}{2\sigma^2} + \frac{y\mu}{\sigma^2} - \frac{\mu^2}{2\sigma^2} - \frac{1}{2}\log(2\pi\sigma^2)   \right]
 \] where \(a(y) = y\), \(b(\mu) = \frac{\mu}{\sigma^2}\),
 \(c(\mu) = -\frac{\mu^2}{2\sigma^2} - \frac{1}{2}\log(2\pi\sigma^2)\),
@@ -245,7 +285,7 @@ Because this is in canonical form, \(\text{E}[y] = \text{E}[a(y)]\).
 \textbf{(c)}: For
 \(Y \sim \text{Bin}(n, \pi), \text{E}(Y) = n\pi \text{ and var}(Y) = n\pi(1 - \pi)\)
 
-\emph{Solutions: } The canonical form of the Binomial distribution is \[
+\emph{Solution: } The canonical form of the Binomial distribution is \[
 \exp\left[y\log\left(\frac{\pi}{1-\pi}\right) + n\log(1-\pi) + \log\binom{n}{y}\right]
 \] where
 \(a(y) = y, b(\pi) = \log\left(\frac{\pi}{1-\pi}\right), c(\pi) = n\log(1-\pi),\)
@@ -267,7 +307,7 @@ and \(d(y) = \log\binom{n}{y}\).
 \textbf{(a)}: For a Negative Binomial distribution
 \(Y \sim \text{NBin}(r, \theta)\), find E\((Y)\) and var\((Y)\).
 
-\emph{Solutions: } The canonical form of the binomial distribution is
+\emph{Solution: } The canonical form of the binomial distribution is
 listed in Exercise Three.
 
 \begin{align*}
@@ -283,7 +323,9 @@ var\((Y)\), for the Binomial distribution E\((Y) >\) var\((Y)\), and for
 the negative Binomial distribution E\((Y) <\) var\((Y)\). How might
 these results affect your choice of a model?
 
-\emph{Solutions: }
+\emph{Solution: } Knowing that these responses can lead to different
+degrees of scattering from the variance, one could select proper link
+functions to minimize variance that might negatively affect your model.
 
 \pagebreak
 
@@ -302,6 +344,8 @@ can be written as \[\pi_i^{y_i} (1 - \pi_i)^{1 - y_i},\] where
 \textbf{(a)}: Show that this probability function belongs to the
 exponential family of distributions.
 
+\emph{Solution: }
+
 \begin{align*}
 f(y_i; \pi_i) &= \pi_i^{y_i} (1 - \pi_i)^{1 - y_i}\\
               &= \exp[\log(\pi_i^{y_i} (1 - \pi_i)^{1 - y_i})]\\
@@ -318,20 +362,38 @@ where
 logarithm of the \textbf{odds} \(\pi_i/(1 - \pi_i)\), is called the
 \textbf{logit} function.
 
+\emph{Solution: }
+
 By definition, \(b(\pi_i)\) is the natural parameter and it is shown
 above.
 
 \textbf{(c)}: Show that E\((Y_i) = \pi_i\).
 
+\emph{Solution: }
+
 \begin{align*}
 \text{E}[y] &= \frac{-c'(\pi_i)}{b'(\pi_i)}\\
-            &= \frac{(1/(1-\pi_i)}{1/(\pi_i-pi_i^2)}\\
+            &= \frac{(1/(1-\pi_i)}{1/(\pi_i-\pi_i^2)}\\
+            &= \frac{\pi_i(1-\pi_i)}{1-\pi_i}\\
+            &= \pi_i
 \end{align*}
 
 \textbf{(d)}: If the link function is
 \[g(\pi) = \log\left( \frac{\pi}{1-\pi} \right) = \vec{x}^T\vec{\beta},\]
 show that this is equivalent to modelling the probability \(\pi\) as
 \[\pi = \frac{e^{\vec{x}^T\vec{\beta}}}{1 + e^{\vec{x}^T\vec{\beta}}}.\]
+
+\emph{Solution: }
+
+\begin{align*}
+& & \log\left( \frac{\pi}{1-\pi} \right) &= \vec{x}^T\vec{\beta}\\
+\implies & & \frac{\pi}{1-\pi} &= \exp[\vec{x}^T\vec{\beta}]\\
+\implies & & \pi &= \exp[\vec{x}^T\vec{\beta}] - \pi(\exp[\vec{x}^T\vec{\beta}])\\
+\implies & & \pi + \pi(\exp[\vec{x}^T\vec{\beta}]) &= \exp[\vec{x}^T\vec{\beta}]\\
+\implies & & \pi(1 + \exp[\vec{x}^T\vec{\beta}]) &= \exp[\vec{x}^T\vec{\beta}]\\
+\implies & & \pi &= \dfrac{\exp[\vec{x}^T\vec{\beta}]}{(1 + \exp[\vec{x}^T\vec{\beta}])}\\
+\implies & & \pi &= \frac{e^{\vec{x}^T\vec{\beta}}}{1 + e^{\vec{x}^T\vec{\beta}}}.
+\end{align*}
 
 \textbf{(e)}: In the particular case where
 \(\vec{x}^T\vec{\beta} = \beta_1 + \beta_2x\), this gives
@@ -343,6 +405,27 @@ Sketch the graph of \(\pi\) against \(x\) in this case, taking
 graph if \(x\) is the dose of an insecticide and \(\pi\) is the
 probability of an insect dying?
 
+\emph{Solution: }
+
+I'll ``sketch'' the graph in R.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{curve}\NormalTok{(}\KeywordTok{exp}\NormalTok{(x)/(}\DecValTok{1}\NormalTok{+}\KeywordTok{exp}\NormalTok{(x)), -}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DataTypeTok{n =} \DecValTok{2000}\NormalTok{, }\DataTypeTok{add =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{type =} \StringTok{"l"}\NormalTok{,}
+      \DataTypeTok{ylab =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{log =} \OtherTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Exercises_files/figure-latex/unnamed-chunk-1-1.pdf}
+
+Essentially, what this means is that as there is no need for an insane
+amount of pesticide because there is clearing a ceiling at which given
+some x, the logistic link is approximately 1. The speed at which this
+occurs is obviously different for different \(\vec{\beta}\). In this
+case, \(\beta_1 = 0, \beta_2 = 1\).
+
+\pagebreak
+
 \subsection{Exercise Twelve}\label{exercise-twelve}
 
 \paragraph{Questions and Solutions}\label{questions-and-solutions-1}
@@ -352,9 +435,32 @@ probability of an insect dying?
 \textbf{(a)}: Show that the Exponential distribution Exp\((\theta)\) is
 a special case of the Gamma distribution G\((\alpha, \beta)\).
 
-\textbf{(b)}: If \(X\) has the Uniford Distribution U\([0,1]\) that is,
+\emph{Solution: } The exponential distribution is
+\(\text{Gamma}(1, 1/\theta)\).
+
+\begin{align*}
+G[\alpha, \beta] &= \frac{1}{\Gamma(\alpha)\beta^\alpha}x^{\alpha-1}e^{-x/\beta}\\
+G[1, 1/\theta] &= \frac{1}{\Gamma(1)(1/\theta)^1}x^{1-1}e^{-x/(1/\theta)}\\
+                &= \frac{1}{\theta^{-1}}x^0e^{-x\theta}\\
+                &= \theta e^{-\theta x}\\
+                &= \text{Exp}[\theta]
+\end{align*}
+
+\textbf{(b)}: If \(X\) has the Uniform Distribution U\([0,1]\) that is,
 \(f(x) = 1\) for \(0 < x < 1\), show that \(Y = -\theta \log X\) has the
 distribution Exp\((\theta)\).
+
+\emph{Solution: }
+
+\begin{align*}
+\text{Exp}[\theta] &= \frac{1}{\theta} e^{- x/\theta}\\
+X \sim \text{U}[0,1] &= 1\\
+Y &= -\theta \log X\\
+\implies X &= e^{-Y/\theta}\\
+\frac{dX}{dY} &= \frac{-1}{\theta}e^{-Y/\theta}\\
+f_Y(y) &= f_X(X)\left|\frac{dX}{dY}\right|\\
+f_Y(y) &= \frac{1}{\theta}e^{-Y/\theta}\\
+\end{align*}
 
 \textbf{(c)}: Use the moment generating functions (or other methods) to
 show
