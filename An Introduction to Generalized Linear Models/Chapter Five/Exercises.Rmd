@@ -1,7 +1,7 @@
 ---
 title: "Chapter Five"
-author: "Ryan Honea"
-date: "9/18/2017"
+author: "NAME HERE"
+date: "9/25/2017"
 header-includes:
    - \usepackage{bbm}
    - \usepackage{bm}
