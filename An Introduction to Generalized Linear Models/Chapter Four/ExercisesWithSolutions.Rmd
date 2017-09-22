@@ -1,4 +1,4 @@
----
+x---
 title: "Chapter Four"
 author: "Ryan Honea"
 header-includes:
@@ -37,13 +37,28 @@ Year & 1     & 2     & 3    & 4    \\ \midrule
 #### Solutions
 **(a)**: Plot the number of cases $y_i$ against time period $i$ ($i = 1,...,20$).
 
+*Solution: * 
+```{r, echo = TRUE}
+time <- seq(1,20,by=1)
+cases <- c(01, 06, 16, 23, 27, 039, 031, 030, 043, 051,
+          63, 70, 88, 97, 91, 104, 110, 113, 149, 159)
+plot(cases ~ time)
+```
+
 **(b)**: A possible model is the Poisson distribution with parameter $\lambda_i = i^\theta$, or equivelantly
 $$
 \log\lambda_i = \theta\log i.
 $$
 Plot $\log y_i$ against $\log i$ to examine this model.
 
-**(c)**: Fit a gneralized linear model to these data using the Poisson distribution, the log-link function and the equation
+*Solution: *
+```{r, echo = TRUE}
+log_cases = log(cases)
+log_time = log(time)
+plot(log_time, log_cases)
+```
+
+**(c)**: Fit a generalized linear model to these data using the Poisson distribution, the log-link function and the equation
 $$
 g(\lambda_i) = \log\lambda_i = \beta_1 + \beta_2x_i,
 $$
@@ -53,7 +68,59 @@ $$
 $$
 and using software which can perform matrix operations to carry out the calculations.
 
+*Solution: * Note that 
+$$
+w_{ii} = \frac{1}{\text{var}(Y_i)}\left(\frac{\partial \mu_i}{\partial \eta_i}\right)^2
+$$
+and
+$$
+z_i = \sum_{k=1}^px_{ik}b_k^{(m-1)} + (y_i - \mu_i)\left(\frac{\partial \eta_i}{\partial \mu_i}\right)
+$$
+
+and these are the values for which we must find solutions.
+
+In this case, $\mu_i = \lambda_i = e^{\beta_1 + \beta_2x_i} = e^{\eta_i}$ and thus $\frac{\partial \mu_i}{\partial \eta_i} = e^{\eta_i}$. We also know that $\text{var}(Y_i)$ of a Poisson is just $\lambda_i$ (where $\lambda_i = e^{\eta_i}$ here). Therefore we have
+$$
+w_{ii} = \frac{1}{e^{\eta_i}}\left(e^{\eta_i}\right)^2 = e^{\eta_i} = e^{\bm{x}_i^T\bm{\beta}}.
+$$
+and
+\begin{align*}
+z_i &= \bm{x}_i\bm{\beta} + (y_i - e^{\eta_i})(e^{\eta_i})\\
+    &= \eta_i + (y_i - e^{\eta_i})e^{-\eta_i}\\
+    &= \eta_i + \frac{y_i}{\eta_i} - 1
+\end{align*}
+
+We can therefore solve this with the following iterative R code initializing our $\bm{\beta}$ to the means of the $x_i$.
+```{r, echo = TRUE}
+require(MASS)
+x = as.matrix(log(time))
+y = as.matrix(cases)
+x = cbind(rep(1,length(x)), x)
+b = as.matrix(c(mean(x[,1]),mean(x[,2])))
+for (i in 1:1000) {
+  oldb = b
+  w_ii = exp(x%*%b)
+  W = diag(w_ii[,])
+  z = x %*% b + y/exp(x%*%b) - 1
+  b = solve(t(x) %*% W %*% x) %*% (t(x) %*% W %*% z)
+  b1 = sprintf("%.5f", b[1])
+  b2 = sprintf("%.5f", b[2])
+  cat("Iteration", i, ": b1 = ", b1, ", b2 = ", b2, "\n")
+  if (abs(oldb[1] - b[1]) < .0005 & abs(oldb[2] - b[2]) < .0005) {
+    cat("Converged at", i, "iterations")
+    break
+  }
+}
+```
+
 **(d)**: Fit the model in (c) using statistical software which can perform Poisson regression. Compare the results with those obtained in (c).
+
+```{r, echo = TRUE}
+glmod <- glm(cases ~ log(time), family = "poisson")
+cat("b1 =", glmod$coefficients[1], "\nb2 =", glmod$coefficients[2])
+```
+
+The results of the model using the built in ```glm``` feature in R are the same as the results from the code in part **c**. 
 
 \pagebreak
 
@@ -75,14 +142,50 @@ $x_i$ & 3.85 & 3.97 & 4.51 & 4.54 & 5.00 & 5.00 & 4.72 & 5.00 &      \\ \bottomr
 #### Solutions
 **(a)**: Plot $y_i$ against $x_i$. Do the data show any trends?
 
+*Solution: * 
+```{r, echo = TRUE}
+x <- c(3.36, 2.88, 3.63, 3.41, 3.78, 4.02, 4.00, 4.23, 3.73,
+       3.85, 3.97, 4.51, 4.54, 5.00, 5.00, 4.72, 5.00)
+y <- c(065, 156, 100, 134, 016, 108, 121, 004, 039,
+       143, 056, 026, 022, 001, 001, 005, 065)
+df <- data.frame(cbind(x, y))
+plot(df$x, df$y)
+abline(lm(df$y ~ df$x))
+```
+
+I decided to go ahead and add the line that would come from a typical linear regression.  The only clear trend seems to be a slightly downward trend, but overall the data seems to be pretty dispersed as it stands right now.
+
 **(b)**: A possible specification for $E(Y)$ is
 $$
 \text{E}(Y_i) = \exp(\beta_1 + \beta_2x_i),
 $$
-which can ensure all E$(Y)$ is non-negative for lall values of the paramaters and all values of $x$. Which link functio is appropriate in this case?
+which can ensure all E$(Y)$ is non-negative for all values of the paramaters and all values of $x$. Which link function is appropriate in this case?
 
-**(c)**: The Exponential distribution is ofte used to describe survival times. The probability distribution is $f(y; \theta) = \theta e^{-y\theta}$. This is a sepcial case of the Gamma distribution with shape parameters $\phi = 1$ (see Exercise 3.12(a)). Show that E$(Y) = 1/\theta$ and var$(Y) = 1/\theta^2$.
+```{r, echo = TRUE}
+plot(x, log(y))
+```
+
+This kind of helps in visualizing a potential model to describe our results. Again, it seems that the log-link might be our best result.
+
+**(c)**: The Exponential distribution is often used to describe survival times. The probability distribution is $f(y; \theta) = \theta e^{-y\theta}$. This is a sepcial case of the Gamma distribution with shape parameters $\phi = 1$ (see Exercise 3.12(a)). Show that E$(Y) = 1/\theta$ and var$(Y) = 1/\theta^2$.
+
+*Solution: * In Exercise 3.12(a), it was shown that the Exponential is a special case of the Gamma distribution where $\alpha = 1$, and $\beta = \theta$. The expected value and mean of the gamma distribution are $\text{E}[Y] = \frac{\alpha}{\theta}$ and $\text{var}[Y] = \frac{\alpha}{\beta^2}$. Therfore, $\text{E}[Y] = \frac{1}{\theta}$ and $\text{var}[Y] = \frac{1}{\theta^2}$.
 
 **(d)**: Fit a model with the equation for E$(Y_i)$ given in (b) and the Exponential distribution using appropriate statistical software.
 
-**(e)**: For the model fitted in (d), compare the observed values $y_i$, and fitted values $\hat{y_i} = \exp(\hat{\beta_1} + \hat{\beta_2}x_i),$ and use the standardized residuals $r_i = (y_i - \hat{y_i})/\hat{y_i}$ to investigate the adequacy of the model. (Note: \$hat{y_i}$ is used as the denominator of $r_i$ because it is an estimate of the standard deviation of $Y_i$--see (c) above.)
+```{r, echo = TRUE}
+glmod <- glm(y ~ x, family = Gamma(link = "log"))
+cat("b1 =", glmod$coefficients[1], "\nb2 =", glmod$coefficients[2])
+```
+
+**(e)**: For the model fitted in (d), compare the observed values $y_i$, and fitted values $\hat{y_i} = \exp(\hat{\beta_1} + \hat{\beta_2}x_i),$ and use the standardized residuals $r_i = (y_i - \hat{y_i})/\hat{y_i}$ to investigate the adequacy of the model. (Note: $\hat{y_i}$ is used as the denominator of $r_i$ because it is an estimate of the standard deviation of $Y_i$--see (c) above.)
+
+```{r, echo = TRUE}
+predictions = predict(glmod, list(x = x), type= "resp")
+residuals = (y - predictions)/predictions
+residuals
+plot(x,y)
+curve(predict(glmod, list(x = x), type= "resp"), add=TRUE)
+```
+
+Based on these standardized residuals which are not too far out of reason, it appears that this fit is actually quite adequate. The plot seems to show that there are issues, but considering the high variance of the data, this is perhaps the most adequate fit that is not also in danger of overfitting.

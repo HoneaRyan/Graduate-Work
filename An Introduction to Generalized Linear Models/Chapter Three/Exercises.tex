@@ -24,7 +24,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Exercises},
+            pdftitle={Chapter Three},
             pdfauthor={Ryan Honea},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -114,7 +114,7 @@
 }
 
 \setlength{\droptitle}{-2em}
-  \title{Exercises}
+  \title{Chapter Three}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
   \author{Ryan Honea}
@@ -471,10 +471,20 @@ show
 \item
   Bin\((n, \pi) \rightarrow \text{Po}(\lambda)\) as
   \(n \rightarrow \infty\)
+\end{enumerate}
+
+\emph{Solution: }
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
 \item
   NBin\((r, \theta) \rightarrow \text{Po}(r(1 - \theta))\) as
   \(r \rightarrow \infty\)
 \end{enumerate}
+
+\emph{Solution: }
 
 \textbf{(d)}: Use the Central Limit Theorem to show
 
@@ -482,14 +492,40 @@ show
 \def\labelenumi{\roman{enumi}.}
 \tightlist
 \item
-  Po\((\lambda) \rightarrow \text{N}(\mu, \mu)\) for large \(\mu\).
+  \(\text{Po}(\lambda) \rightarrow \text{N}(\lambda, \lambda)\) for
+  large \(\mu\).
+\end{enumerate}
+
+\emph{Solution: } \(\text{Po}(\lambda)\) can be thought of as the sum of
+\(\lambda \text{ Po}(1)\) random variables. For large \(\mu\) then, the
+distributed approaches the normal distribution with mean \(\mu\) and
+standard deviation \(\sigma^2/n\) where \(\mu = \lambda\) and
+\(\sigma^2 = \lambda^2\) and \(n\) being the sample size of \(\lambda\),
+this reduces to \(\text{N}(\lambda, \lambda)\).
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\tightlist
 \item
   Bin\((n, \pi) \rightarrow\) N\((n\pi, n\pi(1 - \pi))\) for large
   \(n\), provided neither \(n\pi\) nor \(n\pi(1- \pi)\) is too small.
+\end{enumerate}
+
+The binomial distribution can be reduced to a sum of \(n\) Bernoulli
+distributions distributed \(\text{Bernoulli}(p)\). The argument is
+similar to \textbf{(a)}.
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\tightlist
 \item
   G\((\alpha, \beta) \rightarrow\) N\((\alpha/\beta, \alpha/\beta^2)\)
   for large \(\alpha\).
 \end{enumerate}
+
+The Gamma distribution can be reduced to the sum of \(\beta\)
+Exponential distributions and follows a similar argument to
+\textbf{(c)}.
 
 
 \end{document}

@@ -1,5 +1,5 @@
 ---
-title: "Exercises"
+title: "Chapter Three"
 author: "Ryan Honea"
 date: "9/8/2017"
 header-includes:
@@ -273,10 +273,24 @@ f_Y(y) &= \frac{1}{\theta}e^{-Y/\theta}\\
 **(c)**: Use the moment generating functions (or other methods) to show
 
 i. Bin$(n, \pi) \rightarrow \text{Po}(\lambda)$ as $n \rightarrow \infty$
+
+*Solution: *
+
 ii. NBin$(r, \theta) \rightarrow \text{Po}(r(1 - \theta))$ as $r \rightarrow \infty$
+
+*Solution: *
 
 **(d)**: Use the Central Limit Theorem to show
 
-i. Po$(\lambda) \rightarrow \text{N}(\mu, \mu)$ for large $\mu$.
+i. $\text{Po}(\lambda) \rightarrow \text{N}(\lambda, \lambda)$ for large $\mu$.
+
+*Solution: * $\text{Po}(\lambda)$ can be thought of as the sum of $\lambda \text{ Po}(1)$ random variables. For large $\mu$ then, the distributed approaches the normal distribution with mean $\mu$ and standard deviation $\sigma^2/n$ where $\mu = \lambda$ and $\sigma^2 = \lambda^2$ and $n$ being the sample size of $\lambda$, this reduces to $\text{N}(\lambda, \lambda)$.
+
+
 i. Bin$(n, \pi) \rightarrow$ N$(n\pi, n\pi(1 - \pi))$ for large $n$, provided neither $n\pi$ nor $n\pi(1- \pi)$ is too small.
+
+The binomial distribution can be reduced to a sum of $n$ Bernoulli distributions distributed $\text{Bernoulli}(p)$. The argument is similar to **(a)**.
+
 i. G$(\alpha, \beta) \rightarrow$ N$(\alpha/\beta, \alpha/\beta^2)$ for large $\alpha$.
+
+The Gamma distribution can be reduced to the sum of $\beta$ Exponential distributions and follows a similar argument to **(c)**.
