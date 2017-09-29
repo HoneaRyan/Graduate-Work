@@ -243,9 +243,9 @@ initializing our \(\bm{\beta}\) to the means of the \(x_i\).
 \NormalTok{for (i in }\DecValTok{1}\NormalTok{:}\DecValTok{1000}\NormalTok{) \{}
   \NormalTok{oldb =}\StringTok{ }\NormalTok{b}
   \NormalTok{w_ii =}\StringTok{ }\KeywordTok{exp}\NormalTok{(x%*%b)}
-  \NormalTok{W =}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(w_ii) %*%}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(w_ii)) *}\StringTok{ }\KeywordTok{diag}\NormalTok{(}\KeywordTok{length}\NormalTok{(x[,}\DecValTok{1}\NormalTok{]))}
+  \NormalTok{W =}\StringTok{ }\KeywordTok{diag}\NormalTok{(w_ii[,])}
   \NormalTok{z =}\StringTok{ }\NormalTok{x %*%}\StringTok{ }\NormalTok{b +}\StringTok{ }\NormalTok{y/}\KeywordTok{exp}\NormalTok{(x%*%b) -}\StringTok{ }\DecValTok{1}
-  \NormalTok{b =}\StringTok{ }\KeywordTok{ginv}\NormalTok{(}\KeywordTok{t}\NormalTok{(x) %*%}\StringTok{ }\NormalTok{W %*%}\StringTok{ }\NormalTok{x) %*%}\StringTok{ }\NormalTok{(}\KeywordTok{t}\NormalTok{(x) %*%}\StringTok{ }\NormalTok{W %*%}\StringTok{ }\NormalTok{z)}
+  \NormalTok{b =}\StringTok{ }\KeywordTok{solve}\NormalTok{(}\KeywordTok{t}\NormalTok{(x) %*%}\StringTok{ }\NormalTok{W %*%}\StringTok{ }\NormalTok{x) %*%}\StringTok{ }\NormalTok{(}\KeywordTok{t}\NormalTok{(x) %*%}\StringTok{ }\NormalTok{W %*%}\StringTok{ }\NormalTok{z)}
   \NormalTok{b1 =}\StringTok{ }\KeywordTok{sprintf}\NormalTok{(}\StringTok{"%.5f"}\NormalTok{, b[}\DecValTok{1}\NormalTok{])}
   \NormalTok{b2 =}\StringTok{ }\KeywordTok{sprintf}\NormalTok{(}\StringTok{"%.5f"}\NormalTok{, b[}\DecValTok{2}\NormalTok{])}
   \KeywordTok{cat}\NormalTok{(}\StringTok{"Iteration"}\NormalTok{, i, }\StringTok{": b1 = "}\NormalTok{, b1, }\StringTok{", b2 = "}\NormalTok{, b2, }\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
@@ -352,7 +352,7 @@ results. Again, it seems that the log-link might be our best result.
 
 \textbf{(c)}: The Exponential distribution is often used to describe
 survival times. The probability distribution is
-\(f(y; \theta) = \theta e^{-y\theta}\). This is a sepcial case of the
+\(f(y; \theta) = \theta e^{-y\theta}\). This is a special case of the
 Gamma distribution with shape parameters \(\phi = 1\) (see Exercise
 3.12(a)). Show that E\((Y) = 1/\theta\) and var\((Y) = 1/\theta^2\).
 

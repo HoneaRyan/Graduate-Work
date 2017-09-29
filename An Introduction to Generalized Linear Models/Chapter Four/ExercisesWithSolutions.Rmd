@@ -1,4 +1,4 @@
-x---
+---
 title: "Chapter Four"
 author: "Ryan Honea"
 header-includes:
@@ -167,7 +167,7 @@ plot(x, log(y))
 
 This kind of helps in visualizing a potential model to describe our results. Again, it seems that the log-link might be our best result.
 
-**(c)**: The Exponential distribution is often used to describe survival times. The probability distribution is $f(y; \theta) = \theta e^{-y\theta}$. This is a sepcial case of the Gamma distribution with shape parameters $\phi = 1$ (see Exercise 3.12(a)). Show that E$(Y) = 1/\theta$ and var$(Y) = 1/\theta^2$.
+**(c)**: The Exponential distribution is often used to describe survival times. The probability distribution is $f(y; \theta) = \theta e^{-y\theta}$. This is a special case of the Gamma distribution with shape parameters $\phi = 1$ (see Exercise 3.12(a)). Show that E$(Y) = 1/\theta$ and var$(Y) = 1/\theta^2$.
 
 *Solution: * In Exercise 3.12(a), it was shown that the Exponential is a special case of the Gamma distribution where $\alpha = 1$, and $\beta = \theta$. The expected value and mean of the gamma distribution are $\text{E}[Y] = \frac{\alpha}{\theta}$ and $\text{var}[Y] = \frac{\alpha}{\beta^2}$. Therfore, $\text{E}[Y] = \frac{1}{\theta}$ and $\text{var}[Y] = \frac{1}{\theta^2}$.
 

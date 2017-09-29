@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Consider the single response variable $Y$ with $Y \sim \text{Bin}(n, \pi)$.
 
 #### Solution
-**(a)**: Find the Wald statistic $(\hat{\pi} - \pi)^T(\hat{\pi} - \pi)$, where $\hat{pi}$ is the maximum likelihood estimator of $\pi$ and $\infmat$ is the information.
+**(a)**: Find the Wald statistic $(\hat{\pi} - \pi)^T\infmat(\hat{\pi} - \pi)$, where $\hat{\pi}$ is the maximum likelihood estimator of $\pi$ and $\infmat$ is the information.
 
 **(b)**: Verify that the Wald statistic is the same as the score statistic $\bm{U}^T\infmat^{-1}\bm{U}$ in this case (see Example 5.22).
 
@@ -43,6 +43,7 @@ $$
 f(y_i, \theta_i) = \theta_i\exp(-y_i\theta_i)
 $$
 Derive the deviance by comparing the maximal model with different values for $\theta_i$ for each $Y_i$ and the model with $\theta_i = \theta$ for all $i$.
+
 #### Solution
 
 
@@ -53,4 +54,5 @@ For the leukemia survival data in 4.2:
 
 #### Solution
 **(a)**: Use the Wald statistic to obtain an approximate 95\% confidence interval for  the paramter $\beta_1$.
+
 **(b)**: By comparing the deviances for two appropriate models, test the null hypothesis $\beta_2 = 0$ against the alternative hypothesis $\beta_2 \neq 0$. What can you conclude about the use of the initial white blood cell count as a predictor of survival time.

@@ -85,4 +85,4 @@ which can ensure all E$(Y)$ is non-negative for lall values of the paramaters an
 
 **(d)**: Fit a model with the equation for E$(Y_i)$ given in (b) and the Exponential distribution using appropriate statistical software.
 
-**(e)**: For the model fitted in (d), compare the observed values $y_i$, and fitted values $\hat{y_i} = \exp(\hat{\beta_1} + \hat{\beta_2}x_i),$ and use the standardized residuals $r_i = (y_i - \hat{y_i})/\hat{y_i}$ to investigate the adequacy of the model. (Note: \$hat{y_i}$ is used as the denominator of $r_i$ because it is an estimate of the standard deviation of $Y_i$--see (c) above.)
+**(e)**: For the model fitted in (d), compare the observed values $y_i$, and fitted values $\hat{y_i} = \exp(\hat{\beta_1} + \hat{\beta_2}x_i),$ and use the standardized residuals $r_i = (y_i - \hat{y_i})/\hat{y_i}$ to investigate the adequacy of the model. (Note: $\hat{y_i}$ is used as the denominator of $r_i$ because it is an estimate of the standard deviation of $Y_i$--see (c) above.)
