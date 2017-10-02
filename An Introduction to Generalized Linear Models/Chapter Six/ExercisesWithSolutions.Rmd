@@ -1,6 +1,6 @@
 ---
 title: "Chapter Six"
-author: "NAME HERE"
+author: "Ryan Honea"
 date: "10/2/2017"
 header-includes:
    - \usepackage{bbm}
@@ -43,7 +43,56 @@ CHOL & Age & BMI  &  & CHOL & Age & BMI  \\ \midrule
 \end{center}
 
 #### Solution
+We begin by entering our data into collections.
 
+```{r, echo = TRUE}
+chol <- c(5.94, 4.71, 5.86, 6.52, 6.80, 5.23, 4.97, 8.78, 5.13, 6.74,
+          5.95, 5.83, 5.74, 4.92, 6.69, 6.48, 8.83, 5.10, 5.81, 4.65,
+          6.82, 6.28, 5.15, 2.92, 9.27, 5.57, 4.92, 6.72, 5.57, 6.25)
+bmi  <- c(20.7, 21.3, 25.4, 22.7, 23.9, 24.3, 22.2, 26.2, 23.3, 29.2,
+          22.7, 21.9, 22.4, 20.2, 24.4, 26.3, 22.7, 21.5, 20.7, 18.9,
+          23.9, 24.3, 23.8, 19.6, 24.3, 22.0, 22.5, 24.1, 22.7, 27.3)
+age  <- c(52, 46, 51, 44, 70, 33, 21, 63, 56, 54, 44, 71, 39, 58, 58,
+          65, 76, 47, 43, 30, 58, 78, 49, 36, 67, 42, 29, 33, 42, 66)
+```
+
+This is followed by ensuring that these are the matrix class for sake of transpose and inversions.
+
+```{r, echo = TRUE}
+y <- as.matrix(chol)
+X_0 <- cbind(rep(1, length(chol)),
+           as.matrix(age))
+X_1 <- cbind(rep(1, length(chol)),
+           as.matrix(age),
+           as.matrix(bmi))
+```
+
+Now, we can use the ```lm``` command to find the coefficients.
+
+```{r, echo = TRUE}
+lmod_0 <- lm(chol ~ age)
+lmod_1 <- lm(chol ~ age + bmi)
+```
+
+With this information, we can now calculate Deviances and therefore the F-statistic.
+
+```{r, echo = TRUE}
+D_0 = t(y)%*%y - t(lmod_0$coefficients)%*%t(X_0)%*%y
+D_1 = t(y)%*%y - t(lmod_1$coefficients)%*%t(X_1)%*%y
+p = 3
+q = 2
+N = length(y)
+F.stat = ((D_0 - D_1)/(p-q)) / (D_1/(N-p))
+cat("F-Statistic is",F.stat,"\n")
+```
+
+We also want to know the F-statistic at 95\% in order to have a rejection region for our F-statistic.
+
+```{r, echo = TRUE}
+cat("Rejection Region is F > ", qf(.95,p-q,N-p), "\n")
+```
+
+As our F-statistic is within our rejection region, we reject the null model and conclude that BMI's inclusion makes a stronger model.
 
 ## Exercise Five
 #### Question
@@ -71,7 +120,78 @@ obese            & obese                &          \\ \midrule
 #### Solution
 **(a)**: Perform a one-factor analysis of variance to test the hypothesis that there are no mean differences among the three groups. What conclusions can you draw?
 
+*Solution: * We begin by entering the data.
+
+```{r, echo = TRUE}
+hi.obese  <- c(2.3, 4.1, 4.2, 4.0, 4.6, 4.6, 3.8, 5.2, 3.1, 3.7, 3.8)
+nhi.obese <- c(3.0, 4.1, 3.9, 3.1, 3.3, 2.9, 3.3, 3.9)
+controls  <- c(3.0, 2.6, 3.1, 2.2, 2.1, 2.4, 2.8, 3.4, 2.9, 2.6, 3.1, 3.2)
+```
+
+Now, we find the squared-sums and the fits.
+
+```{r, echo = TRUE}
+hi.obese.ssq <- sum(hi.obese^2)
+hi.obese.fit <- rep(mean(hi.obese),length(hi.obese))
+nhi.obese.ssq <- sum(nhi.obese^2)
+nhi.obese.fit <- rep(mean(nhi.obese),length(nhi.obese))
+controls.ssq <- sum(controls^2)
+controls.fit <- rep(mean(controls),length(controls))
+```
+
+With this information, we can begin to perform the ANOVA. We will need to find the Sum of Squares Within Groups, Between Groups, and in the Residuals. Truly, we only need to find two of these because the third can be found by subtracting two SS values from the total.
+
+```{r, echo = TRUE}
+grand.mean = mean(c(hi.obese, nhi.obese, controls))
+hi.obese.sqres <- (hi.obese - hi.obese.fit)^2
+nhi.obese.sqres <- (nhi.obese - nhi.obese.fit)^2
+controls.sqres <- (controls - controls.fit)^2
+TOT <- hi.obese.ssq + nhi.obese.ssq + controls.ssq
+SSR <- sum(c(hi.obese.sqres,nhi.obese.sqres,controls.sqres))
+SSB <-  length(hi.obese)*(mean(hi.obese) - grand.mean)^2 + 
+        length(nhi.obese)*(mean(nhi.obese) - grand.mean)^2 + 
+        length(controls)*(mean(controls) - grand.mean)^2
+SSW <- TOT - SSR - SSB
+cat("Total Sum of Squares:", TOT, "\n",
+    "Sum Squares Within:", SSW, "\n",
+    "Sum Squares Between:",SSB, "\n",
+    "Sum Squares Residuals:", SSR, "\n")
+```
+
+We can now construct an ANOVA table to find our F-value.
+
+\begin{center}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Source of               & Degrees of & Sum of  & Mean   & \multirow{2}{*}{F} \\
+variation               & freedom    & squares & square &                    \\ \midrule
+Mean (SSW)              & 1          & 350.919 &        &                    \\
+Between treatment (SSB) & 2          & 7.808   & 3.904  & 11.653             \\
+Residual (SSR)          & 28         & 9.382   & 0.335  &                    \\ \midrule
+Total                   & 31         & 368.11  &        &                    \\ \bottomrule
+\end{tabular}
+\end{center}
+
+Now, we check the rejection region.
+
+```{r}
+cat("Rejection Region: F > ",qf(.95,2,28))
+```
+
+11.653 is within the rejection region, and so we reject the null hypothesis that the means are equal and conclude that there is evidence to suggest they are different.
+
 **(b)**: Obtain a 95% confidence interval for the difference in means between the two obese groups.
+
+*Solution: *We can do this using t-statistics and pooled standard deviations.
+
+```{r}
+st.dev.pool <- sqrt( (10*sd(hi.obese)^2 + 7*sd(nhi.obese)^2 + 11*sd(controls)^2)/ (28) )
+mean.dif <- mean(hi.obese) - mean(nhi.obese)
+conf.left <- mean.dif - qt(.975,28)*st.dev.pool*sqrt((1/11) + (1/8))
+conf.right <- mean.dif + qt(.975,28)*st.dev.pool*sqrt((1/11) + (1/8))
+cat("Confidence Interval for Different in Means: (", conf.left,
+      ",", conf.right, ")")
+```
 
 **(c)**: Using an appropriate model, examine the standardized residuals for all the observations to look for any systematic effects and to check the Normality assumption.
 
