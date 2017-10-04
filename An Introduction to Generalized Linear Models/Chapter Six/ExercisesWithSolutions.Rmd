@@ -1,7 +1,7 @@
 ---
 title: "Chapter Six"
 author: "Ryan Honea"
-date: "10/2/2017"
+date: "10/3/2017"
 header-includes:
    - \usepackage{bbm}
    - \usepackage{bm}
@@ -161,7 +161,7 @@ cat("Total Sum of Squares:", TOT, "\n",
 We can now construct an ANOVA table to find our F-value.
 
 \begin{center}
-\begin{tabular}{@{}lllll@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
 Source of               & Degrees of & Sum of  & Mean   & \multirow{2}{*}{F} \\
 variation               & freedom    & squares & square &                    \\ \midrule
@@ -195,6 +195,18 @@ cat("Confidence Interval for Different in Means: (", conf.left,
 
 **(c)**: Using an appropriate model, examine the standardized residuals for all the observations to look for any systematic effects and to check the Normality assumption.
 
+*Solution: *We can use the fits from before and the pooled standard deviation found previously to find standardized residuals for each of our factors.
+
+```{r, echo = TRUE}
+fits <- c(hi.obese.fit,nhi.obese.fit,controls.fit)
+fits_labels <- factor(c(rep(0,11), rep(1,8), rep(2,12)))
+observed <- c(hi.obese, nhi.obese, controls)
+standard.residuals <- (fits-observed)/st.dev.pool
+plot(fits,standard.residuals, col = fits_labels)
+legend(2.75,3,c("HI Obese","NHI Obese", "Controls"),col = 1:3, pch = 1)
+```
+
+The NHI Obese appears as if it might not be normal, but with each factor having so little observations, that is difficult to assess. That being said, the Hyperinsulinemic Obese appear to have much more variation compared to the non-hyperinsulinemic obese and controls. Indeed, the latter two standard residuals are primarily within 1 standard deviation, while the hyperinsulinemic obese goes out to up to three standard deviations.
 
 
 
@@ -244,5 +256,19 @@ Total        & 12                             & 664.1000                    &   
 
 #### Solution
 **(a)**: Show that $\bm{X}^T\bm{X}$ has the block diagonal form described in Section 6.2.5. Fit the model (6.9) and also the models (6.10) and (6.12) and verify that the results in the second table above (Table 6.12) are the same for this specification of $\bm{X}$. 
+
+*Solution: * First, we put the matrix in R so we don't have to do this matrix multiplication by hand.
+```{r, echo = TRUE}
+X <- matrix(c( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+              -1,-1,-1,-1, 1, 1, 1, 1, 0, 0, 0, 0,
+              -1,-1,-1,-1, 0, 0, 0, 0, 1, 1, 1, 1,
+              -1,-1, 1, 1,-1,-1, 1, 1,-1,-1, 1, 1,
+               1, 1,-1,-1,-1,-1, 1, 1, 0, 0, 0, 0,
+               1, 1,-1,-1, 0, 0, 0, 0,-1,-1, 1, 1),
+            ncol = 6, byrow = FALSE)
+t(X)%*%X
+```
+
+This is indeed a block diagonal matrix.
 
 **(b)**: Show that the estimates for the means of the subgroup with the treatments $A_3$ and $B_2$ for two different models are the same as the values given at the end of Section 6.4.2.

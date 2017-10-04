@@ -82,47 +82,6 @@ cat("P-Value: ", ww.test(answers))
 
 With a p-value this low, one could reasonably assume that this is not randomly distributed and so repeating the pattern wouldn't necessarily be an awful idea.
 
-## Testing the Wald-Wolfowitz Test on the Standard Normal
-To test this function, we will consider thirty observations from the standard normal distribution and test their randomness. We will do this with the Wald-Wolfowitz test by simulating thirty observations and marking them as a - if they are less than the mean and a + if they are greater than the mean. If they are equal to the mean, they will be removed. This will be repeated one-hundred times, 
-
-```{r, echo = TRUE}
-rejected = 0
-sims = 100
-for (i in 1:sims) {
-  sim <- rnorm(30)
-  sim[sim < 0] = '-'
-  sim[sim > 0] = '+'
-  sim = sim[sim != 0]
-  if (ww.test(sim) <= 0.05) rejected = rejected + 1
-}
-cat("This test was successful",(sims-rejected)/sims,"percent of the time")
-```
-
-We might also be interested to see how this test performs with increasing numbers of observations from the standard normal. Below, we create a plot of that information.
-
-```{r, echo = TRUE}
-n = 10
-proportions <- c()
-while (n <= 500) {
-  rejected = 0
-  sims = 500
-  for (i in 1:sims) {
-    sim <- rnorm(n)
-    sim[sim < 0] = '-'
-    sim[sim > 0] = '+'
-    sim = sim[sim != 0]
-    if (ww.test(sim) <= 0.05) rejected = rejected + 1
-  }
-  proportions <- c(proportions, (sims - rejected)/sims)
-  n = n + 10
-}
-plot(seq(10,500,by = 10), proportions,
-     xlab = "Number of Samples", ylab = "Success of Test",
-     main = "Success of Wald-Wolfowitz Test")
-```
-
-It isn't immediately intuitive as to why this would occur, but with increasing samples, a discrete distribution begins to look more and more like a continuous distribution where the probability of an event occuring is 0.
-
 ## Utilizing the Wald-Wolfowitz Test on Observations from Two Distributions
 Now, assume that one is sampling from two distributions and is curious about whether or not these distributions are the same (without knowing the true distribution). So,
 
@@ -138,9 +97,11 @@ To test this, we sample $n$ and $m$ observations from $G(x)$ and $G(y)$ respecti
 $$1, 4, 2, 9, 5 \sim F(x)\\
 3, 0, 8, 7, 6 \sim G(x)$$
 which ordered is
-$$(0,y)\quad(1,x)\quad(2,x)\quad(3,y)\quad(4,x)\quad(5,x)\quad(6,y)\quad(7,y)\quad(8,y)\quad(9,x)\\
-\text{or}\\
-y \quad x \quad x \quad y \quad x \quad x \quad y \quad y \quad y \quad x$$
+$$(0,y)\quad(1,x)\quad(2,x)\quad(3,y)\quad(4,x)\quad(5,x)\quad(6,y)\quad(7,y)\quad(8,y)\quad(9,x)$$
+or 
+$$
+y \quad x \quad x \quad y \quad x \quad x \quad y \quad y \quad y \quad x
+$$
 
 If the two distributions are the same, the observations should be well interspersed with one another with the ideal being complete alternation (i.e. x, y, x, y, x...). So if they are not the same then, the number of runs should be low as the observations would be more seperated where the most extreme case would be no alternation (i.e. x, x, x, y, y, y). Therefore, we need to find $c$ such that $P(R < c) \leq \alpha$ in order to obtain a rejection region. 
 

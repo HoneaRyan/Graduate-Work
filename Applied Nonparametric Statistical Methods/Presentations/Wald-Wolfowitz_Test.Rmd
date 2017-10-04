@@ -99,7 +99,6 @@ cat("This test was successful",(sims-rejected)/sims,"percent of the time")
 ```
 
 We might also be interested to see how this test performs with increasing numbers of observations from the standard normal. Below, we create a plot of that information.
-
 ```{r, echo = TRUE}
 n = 10
 proportions <- c()
