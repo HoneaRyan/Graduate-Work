@@ -1,6 +1,6 @@
 ---
 title: "Chapter Seven"
-author: "NAME HERE"
+author: "Ryan Honea"
 date: "10/9/2017"
 header-includes:
    - \usepackage{bbm}
@@ -13,6 +13,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+require(ggplot2)
 ```
 
 ## Exercise One
@@ -33,10 +34,69 @@ Total Cancers & 391 & 205 & 156   & 50    & 35      & 51   \\ \bottomrule
 #### Solution
 **(a)**: Obtain a suitable model to describe the dose-response relationship between radiation and the proportional cancer mortality rates for leukemia.
 
-**(b)**: Exame how well the model describes the data.
+*Solution: * First we enter the data and plot it to gain an initial understanding of our data.
+```{r, echo = TRUE}
+Dosage <- c("0", "1-9", "10-49","50-99","100-199","200+")
+Dose.Bounded <- c(0,1,10,50,100,200)
+Leukemia <- c(13, 5, 5, 3, 4, 18)
+Other <- c(378, 200, 151, 47, 31, 33)
+labels <- c("Leukemia","Other")
+colors <- c(rep("red",6), rep("blue",6))
+plot(c(Dose.Bounded, Dose.Bounded), c(Leukemia, Other), 
+     pch = c(16,16), col = colors,
+     xlab = "Dosage Lower Bound", ylab = "Deaths",
+     main = "Cancer Deaths by Dosage in Rads")
+legend("topright", title = "Cancer Type",
+       labels, col = c("red","blue"), pch = c(16,16))
+```
 
+There is clearly a divide here that we can hope to find with a logistic model.
+
+```{r, echo = TRUE}
+cancers <- cbind(Leukemia, Other)
+logmod <- glm(cancers ~ Dose.Bounded, family=binomial(link = "logit"))
+logmod
+```
+
+**(b)**: Examine how well the model describes the data.
+
+*Solution*: Below is a graph checking the accuracy of the model by drawing a line along the proportion of cancer deaths.
+
+```{r, echo = FALSE}
+proportions <- Leukemia/Other
+plot(Dose.Bounded, proportions, 
+     pch = c(16,16), xlab = "Dosage Lower Bound", 
+     ylab = "Proportion of Cancer Deaths (# Leukemia / # Other)",
+     main = "Cancer Deaths by Dosage in Rads")
+b0 <- logmod$coefficients[[1]]
+b1 <- logmod$coefficients[[2]]
+y <- function(x) {
+  exp(b0 + b1*x) /
+  (1 + exp(b0 + b1*x))
+} 
+curve(y, add=TRUE)
+```
+
+As there are six covariate patterns and one parameter, we can find the Deviance and check it against $\chi^2(6-1)$.
+```{r, echo = TRUE}
+deviance = logmod$deviance
+p.value <- 1 - pchisq(deviance, df = 5)
+cat("P.Value:",p.value)
+```
+
+Conversely, one can use the Hosmer Lemeshow test where $D \sim \chi^2(g-2)$ where in this case, we have six groups, so $g = 6$.
+
+```{r, echo = TRUE}
+deviance = logmod$deviance
+p.value <- 1 - pchisq(deviance, df = 4)
+cat("P.Value:",p.value)
+```
 **(c)**: Interpret the results.
 
+*Solution*: Based on the above p-values, it is strongly suggested that this is a strong model with a good fit.
+
+
+\pagebreak
 
 ## Exercise Two
 #### Question
@@ -44,6 +104,7 @@ Total Cancers & 391 & 205 & 156   & 50    & 35      & 51   \\ \bottomrule
 $$
 \phi = \frac{O_1}{O_2} = \frac{\pi_1(1-\pi_2)}{\pi_2(1-\pi_1)}
 $$
+
 is a measure of the relative likelihood of disease for the exposed and not exposed groups.
 
 \begin{center}
@@ -58,13 +119,33 @@ Not exposed & $\pi_2$  & $1-\pi_2$    \\ \bottomrule
 #### Solution
 **(a)**: For the simple logistic model $\pi_i = e^{\beta_i}/(1+e^{\beta_i})$, show that if there is no difference between the exposed and not exposed groups (i.e. $\beta_1 = \beta_2$), then $\phi = 1$.
 
+*Solution*: If $\beta_1 = \beta_2$, then
+$$\pi_1 = \frac{e^{\beta_1}}{1 + e^{\beta_1}} = \frac{e^{\beta_2}}{1 + e^{\beta_2}} = \pi_2$$
+and thus
+$$\phi = \frac{\pi_1(1 - \pi_2)}{\pi_2(1-\pi_1)} = \frac{\pi_1(1-\pi_1)}{\pi_1(1-\pi_1)} = 1$$
+
 **(b)**: Consider $J$ $2\times2$ tables like Table 7.13, one for each level $x_j$ of a factor, such as age group, with $j = 1,...,J$. For the logistic model
 $$
 \pi_{ij} = \frac{\exp(\alpha_i + \beta_ix_j)}{1 + \exp(\alpha_i + \beta_ix_j)}, \quad i = 1,2, \quad j = 1,...,J.
 $$
 
-Show that $\log\phi$ is connstant over all table if $\beta_1 = \beta_2$ (McKinlay 1979).
+Show that $\log\phi$ is constant over all table if $\beta_1 = \beta_2$ (McKinlay 1979).
 
+*Solution:* If $\beta_1 = \beta_2$ and $\eta_{i} = \alpha_i + \beta_ix_j$
+\begin{align*}
+\phi_j  &= \frac{\pi_{1j}(1-\pi_{2j})}{\pi_{2j}(1-\pi_{1j})}
+         = \dfrac{\frac{\exp(\eta_1)}{1 + \exp(\eta_1)}\left(1 - \frac{\exp(\eta_2)}{1 + \exp(\eta_2)}\right)}
+            {\frac{\exp(\eta_2)}{1 + \exp(\eta_2)}\left(1 - \frac{\exp(\eta_1)}{1 + \exp(\eta_1)}\right)}\\
+        &= \dfrac{\frac{\exp(\eta_1)}{1 + \exp(\eta_1)}\left(\frac{1}{1 + \exp(\eta_2)}\right)}
+            {\frac{\exp(\eta_2)}{1 + \exp(\eta_2)}\left(\frac{1}{1 + \exp(\eta_1)}\right)}
+         = \frac{\eta_1}{\eta_2}\\
+        &= \exp(\eta_1 - \eta_2) = \exp(\alpha_1 - \alpha_2 - x_j(\beta_1 - \beta_2))\\
+        &= \exp(\alpha_1 - \alpha_2 - x_j(\beta_1 - \beta_1)) = \exp(\alpha_1 - \alpha_2)
+\end{align*}
+
+So we have shown that $\phi_j$ is constant when $\beta_1 = \beta_2$.
+
+\pagebreak
 
 ## Exercise Three
 #### Question
@@ -111,10 +192,109 @@ Total      & 126                   & 157                   & 58                 
 
 
 #### Solution
-**(a)**: Are the proportions of graduates who survived for 50 years after graduation the same all years of graduation?
+*Data Entry: *
+
+```{r, echo = TRUE}
+YoG <- seq(1938,1947,by=1)
+Male.Med.S <- c(18,16,7,12,24,16,22,12,22,28)
+Male.Med.T <- c(22,23,17,25,50,21,32,14,34,37)
+Male.Art.S <- c(16,13,11,12,8,11,4,4,0,13)
+Male.Art.T <- c(30,22,25,13,12,20,10,12,0,23)
+Male.Sci.S <- c(9,9,12,12,20,16,25,32,4,25)
+Male.Sci.T <- c(14,12,19,15,28,21,31,38,5,31)
+Male.Eng.S <- c(10,7,12,8,5,1,16,9,0,25)
+Male.Eng.T <- c(16,11,15,9,7,2,22,25,0,35)
+Fema.Art.S <- c(14,11,15,15,8,13,18,18,1,13)
+Fema.Art.T <- c(19,16,18,21,9,13,22,22,1,16)
+Fema.Sci.S <- c(1,4,6,3,4,8,5,16,1,10)
+Fema.Sci.T <- c(1,4,7,3,4,9,5,17,1,10)
+df <- data.frame(YoG = YoG, Male.Med.S = Male.Med.S, Male.Med.T = Male.Med.T,
+                 Male.Art.S = Male.Art.S, Male.Art.T = Male.Art.T,
+                 Male.Sci.S = Male.Sci.S, Male.Sci.T = Male.Sci.T,
+                 Male.Eng.S = Male.Eng.S, Male.Eng.T = Male.Eng.T,
+                 Fema.Art.S = Fema.Art.S, Fema.Art.T = Fema.Art.T,
+                 Fema.Sci.S = Fema.Sci.S, Fema.Sci.T = Fema.Sci.T)
+```
+
+Because the year 1946 is missing values, I'm just going to remove the row.
+
+```{r, echo = TRUE}
+df <- df[-9,]
+proportions <- matrix(, nrow = 9, ncol = 6)
+for (i in 1:6) {
+  proportions[1:9,i] = df[,2*i]/df[,2*i + 1]
+}
+labels = c("MaleMed", "MaleArt", "MaleSci", "MaleEng", "FemaArt", "FemaSci")
+colors = c("red"    , "blue"   , "gold"   , "green"  , "purple" , "black")
+plot(df[,1], proportions[,1], col = colors[1],
+     ylim = c(0,1), pch = 16, type = "o",
+     xlab = "Year", ylab = "Proportions")
+for (i in 2:6) {
+  lines(df[,1], proportions[,i], col = colors[i], pch = 16, type = "o")
+}
+legend("bottomleft", labels, col = colors, pch = rep(16,6))
+```
+
+**(a)**: Are the proportions of graduates who survived for 50 years after graduation the same for all years of graduation?
+
+```{r, echo = TRUE}
+models <- list()
+for (i in 1:6) {
+  models[[i]] <- glm(cbind(df[,i*2],df[,i*2 + 1]) ~ df[,1], family = binomial(link = "logit"))
+}
+predval <- sapply(models, 
+	function(m) predict(m, data.frame(x=df[,1]), type="response"))
+  predval <- data.frame(df[,1], predval)
+  colnames(predval) <- c("Year", labels)
+obs <- stack(predval[,2:7])
+year <- df[,1]
+obs <- cbind(year, obs)
+ggplot(obs, aes(x=year, y=values, color=ind))+geom_line()+ylim(0,1)
+```
+
+I would argue that none of these visually seem to be increasing much or decreasing much so I would argue that the proportions are equal across the years.
 
 **(b)**: Are the proportions of male graduates who survived for 50 years after graduation the same for all Faculties?
 
+```{r, echo = TRUE}
+predval <- sapply(models, 
+	function(m) predict(m, data.frame(x=df[,1]), type="response"))
+  predval <- data.frame(df[,1], predval)
+  colnames(predval) <- c("Year", labels)
+obs <- stack(predval[,2:5])
+year <- df[,1]
+obs <- cbind(year, obs)
+ggplot(obs, aes(x=year, y=values, color=ind))+geom_line()+ylim(0,1)
+```
+
+Males in the sciences appear to live longer than the art counterparts over the years, but the only conclusive evidence I offer is this graph.
+
 **(c)**: Are the proportions of female graduates who survived for 50 years after graduation the same for Arts and Science?
 
+```{r, echo = TRUE}
+predval <- sapply(models, 
+	function(m) predict(m, data.frame(x=df[,1]), type="response"))
+  predval <- data.frame(df[,1], predval)
+  colnames(predval) <- c("Year", labels)
+obs <- stack(predval[,6:7])
+year <- df[,1]
+obs <- cbind(year, obs)
+ggplot(obs, aes(x=year, y=values, color=ind))+geom_line()+ylim(0,1)
+```
+
+The same is here. Women in the sciences appear to live longer than women in the arts.
+
 **(d)**: Is the difference between men and women in the proportion of graduates who survived for 50 years after graduation the same for Arts and Science?
+
+```{r, echo = TRUE}
+predval <- sapply(models, 
+	function(m) predict(m, data.frame(x=df[,1]), type="response"))
+  predval <- data.frame(df[,1], predval)
+  colnames(predval) <- c("Year", labels)
+obs <- stack(c(predval[,3:4],predval[,6:7]))
+year <- df[,1]
+obs <- cbind(year, obs)
+ggplot(obs, aes(x=year, y=values, color=ind))+geom_line()+ylim(0,1)
+```
+
+The differences appear to be much wider with the men, but again the only conclusive evidence I offer is the graph above.

@@ -26,9 +26,9 @@ P(r = 2k)   = \dfrac{2\binom{n-1}{k-1}\binom{m-1}{k-1}}{\binom{m+n}{n}}$$
 The first step in running this test given any data set then is to determine the number of runs which is done by the function below. Note that the sum of runs starts at 1 because a sequence that is all the same is still a single run.
 ```{r, echo = TRUE}
 num_runs <- function(seq) {
-  sum = 1
+  sum <- 1
   for (i in 1:(length(seq) - 1)) {
-    if (seq[i] != seq[i+1]) sum = sum + 1
+    if (seq[i] != seq[i+1]) sum <- sum + 1
   }
   return(sum)
 }
@@ -40,13 +40,13 @@ Next, one must determine whether or not there is an even or odd number of runs w
 p_calc <- function(runs, n, m) {
   if (runs %% 2 == 0) {
      k = runs/2
-    numerator = choose(n-1, k-1)*choose(m-1,k-1)
-    denominator = choose(m + n, n)
+    numerator <- choose(n-1, k-1)*choose(m-1,k-1)
+    denominator <- choose(m + n, n)
     return(2*numerator/denominator) 
   } else {
-    k = runs%/%2
-    numerator = choose(n-1,k)*choose(m-1,k-1) + choose(n-1,k-1)*choose(m-1,k)
-    denominator = choose(m + n, n)
+    k <- runs%/%2
+    numerator <- choose(n-1,k)*choose(m-1,k-1) + choose(n-1,k-1)*choose(m-1,k)
+    denominator <- choose(m + n, n)
     return(numerator/denominator)
   }
 }
@@ -56,13 +56,20 @@ In order to read any sequence as different factors, a function must converse a s
 
 ```{r, echo=TRUE}
 ww.test <- function(seq) {
-  seq = factor(seq)
+  left <- 0
+  right <- 0
+  seq <- factor(seq)
   levels(seq) <- c(0,1)
-  runs = num_runs(seq)
-  n = length(seq[seq == 0])
-  m = length(seq[seq == 1])
-  p.value = p_calc(runs, n, m)
-  return(p.value)
+  runs <- num_runs(seq)
+  n <- length(seq[seq == 0])
+  m <- length(seq[seq == 1])
+  for (i in 1:runs) {
+    left <- left + p_calc(i, n, m)
+  }
+  for (i in runs:(n+m)) {
+    right <- right + p_calc(i, n, m)
+  }
+  return(2*min(left, right))
 }
 ```
 
@@ -81,6 +88,18 @@ cat("P-Value: ", ww.test(answers))
 ```
 
 With a p-value this low, one could reasonably assume that this is not randomly distributed and so repeating the pattern wouldn't necessarily be an awful idea.
+
+We can also test the other extreme
+$$
+T\quad T\quad T\quad T \quad T \quad F\quad F\quad F\quad F\quad F
+$$
+
+```{r, echo = TRUE}
+answers = c('T','T','T','T','T','F','F','F','F','F')
+cat("P-Value: ", ww.test(answers))
+```
+
+which yields the same as the first extreme which is to be expected.
 
 ## Utilizing the Wald-Wolfowitz Test on Observations from Two Distributions
 Now, assume that one is sampling from two distributions and is curious about whether or not these distributions are the same (without knowing the true distribution). So,
