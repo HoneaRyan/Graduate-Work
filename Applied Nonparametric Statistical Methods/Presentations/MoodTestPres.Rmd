@@ -1,0 +1,125 @@
+---
+title: "Two Sample Mood Test"
+author: "Ryan Honea"
+date: "10/11/2017"
+output: 
+  beamer_presentation:
+    theme: "Antibes"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Intro To Two Sample Mood Test
+## Scenario
+
+The Two Sample Mood Test can be used to determine whether or not a variable is widely dispersed. So in this case,
+
+$$
+X\quad X\quad X\quad Y\quad Y\quad Y\quad Y\quad X\quad X\quad X
+$$
+
+it seems clear that X is far more dispersed than Y as opposed to the following case
+
+$$
+X \quad Y \quad X \quad Y \quad X \quad Y \quad X \quad Y
+$$
+
+where the observations seem to be of similar scale.
+
+## Mood Statistic
+
+The mood statistic is
+
+$$
+M_n = \sum_{i=1}^N \left(i - \frac{N-1}{2}\right)^2Z_i
+$$
+
+where high values of $M_n$ would lead us to reject the null hypothesis that the scale of $X$ and $Y$ are equal.The code below will do just that.
+
+
+## R Code for Mood Statistic
+
+```{r, echo = TRUE}
+mood_statistic <- function(X, Y) {
+  X <- cbind(X, rep(1, length(X)))
+  Y <- cbind(Y, rep(0, length(Y)))
+  seq <- rbind(X, Y)
+  seq <- seq[order(seq[,1]),]
+  N <- length(seq[,2])
+  sum <- 0
+  for (i in 1:N) {
+    sum <- sum + (i-(N+1)/2)^2 * seq[i,2]
+  }
+  return(sum)
+}
+```
+
+# Issues with Mood Test
+## Low power for high $n$
+
+```{r, echo = TRUE, eval = FALSE}
+N <- seq(2,100, by = 2)
+Mn <- (N/2)*(N^2 - 1)/12
+Mn0 <- c()
+Mna <- c()
+for (i in 1:length(N)) {
+  sim_0 <- rnorm(N[i])
+  sim_a <- rnorm(N[i],0,3)
+  Mn0[i] <- mood_statistic(sim_0,sim_0)
+  Mna[i] <- mood_statistic(sim_a, sim_0)
+}
+plot(N, Mn, main = "Expected Value of Mn versus N", type = "l")
+lines(N, Mn0, col = "red")
+lines(N, Mna, col = "blue")
+```
+
+## Low power for high $n$
+```{r, echo = FALSE}
+N <- seq(2,100, by = 2)
+Mn <- (N/2)*(N^2 - 1)/12
+Mn0 <- c()
+Mna <- c()
+for (i in 1:length(N)) {
+  sim_a <- rnorm(N[i],0,3)
+  Mn0[i] <- mood_statistic(sim_0,sim_0)
+  Mna[i] <- mood_statistic(sim_a, sim_0)
+}
+plot(N, Mn, main = "Expected Value of Mn versus N", type = "l")
+lines(N, Mn0, col = "red")
+lines(N, Mna, col = "blue")
+```
+
+
+## Difficult to Compute Exact P-Value
+- So difficult, not even listed in book as far as I could find
+- No function availale to compute it exactly unless someone tells me
+- Thank goodness for R
+
+## Sims in R
+```{r, echo = TRUE}
+sim_0 <- rnorm(25)
+sim_01 <- rnorm(25)
+sim_a <- rnorm(25,0,2)
+mood.test(sim_0,sim_a)
+```
+
+## Sims in R
+
+```{r, echo = TRUE}
+mood.test(sim_0,sim_01)
+```
+
+## Sims in R
+```{r, echo = TRUE}
+sim_0 <- rnorm(20000)
+sim_01 <- rnorm(20000)
+sim_a <- rnorm(20000, 0, 2)
+mood.test(sim_0, sim_a)
+```
+
+## Sims in R
+```{r, echo = TRUE}
+mood.test(sim_0, sim_01)
+```
