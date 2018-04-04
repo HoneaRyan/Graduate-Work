@@ -1,0 +1,655 @@
+\documentclass[10pt,a4paper]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{blkarray}
+\usepackage{mathdots}
+\usepackage{commath}
+\usepackage{systeme}
+\usepackage{graphicx}
+\usepackage[left=.75in,right=.75in,top=.75in,bottom=.75in]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{chains}
+
+
+
+\author{Ryan Honea}
+\title{Poisson Process Problems for Solution}
+\begin{document}
+\maketitle
+
+\printanswers
+\begin{questions}
+\question A radio has an exponentially distributed lifetime with mean of ten years. Matt buys a ten-year-old radio. What's the chance that will still function for an additional ten years?
+
+\begin{solution}
+Due to the memoryless property, we can just find the probability that it will last ten years (or more).
+
+\begin{align*}
+P(X \geq 10 + 10|X \geq 10) 	&= P(X \geq 10)\\
+										&= 1 - P(X < 10)\\
+										&= 1 - ( 1 - e^{-10/10})\\
+										&= .3679
+\end{align*}
+\end{solution}
+
+\question Smith enters the post office and discovers Jones and Brown are being served by two clerks. Smith will begin service as soon as either Jones or Brown leaves. All the service times are mutually independent exponential random variables, but clerk $i$ serves with rate $\lambda_i$. Show that the probability that Smith is not the last customer in the post office is given by
+$$\left(\frac{\lambda_1}{\lambda_1 + \lambda_2}\right)^2 + \left(\frac{\lambda_2}{\lambda_1 + \lambda_2}\right)^2$$
+
+\begin{solution}
+There are two cases in which Smith is not the last customer in the post office.
+\begin{enumerate}
+\item Jones's service finishes before Brown's service finishes, and then Smith's service finishes before Brown's service.
+\item Brown's service finishes before Jones's service finishes, and then Smith's service finishes before Jones's service.
+\end{enumerate}
+So, if we consider $S_j$, $S_b$, and $S_s$ the survival times, then the probability is
+\begin{align*}
+P(\text{Jones doesn't leave last})			&= P\Big((S_j < S_b \cap  S_s < S_b) \cup (S_b < S_j \cap S_s < S_b)\Big)\\ 
+			&= P(S_j < S_b \cap  S_s < S_b) + P(S_b < S_j \cap S_s < S_b) \quad \text{by iid}\\
+			&= P(S_j < S_b)P(S_s < S_b) + P(S_b < S_j)P(S_s < S_b) \quad \text{by memoryless}\\
+			&= \left(\frac{\lambda_1}{\lambda_1 + \lambda_2}\right)\left(\frac{\lambda_1}{\lambda_1 + \lambda_2}\right)
+			+  \left(\frac{\lambda_2}{\lambda_1 + \lambda_2}\right) \left(\frac{\lambda_2}{\lambda_1 + \lambda_2}\right)\\
+			&= \left(\frac{\lambda_1}{\lambda_1 + \lambda_2}\right)^2 + \left(\frac{\lambda_2}{\lambda_1 + \lambda_2}\right)^2
+\end{align*}
+\end{solution}
+\pagebreak
+\question Huey Lewis knows that it will take him exactly $c$ time units to cross the road at a place where automobiles pass according to a Poisson process with rate $\lambda$. He begins to cross as soon as he sees that no cars will come for at least the next $c$ times units. Let $N$ denote the number of cars that pass before Huey crosses, and $T$ denote the time at which he begins to cross. Calculate
+\begin{parts}
+\part $E[N]$
+\begin{solution}
+Because this is a Poisson Process, it has stationary increments, and so
+\begin{align*}
+E[N] 	&= E[N(T)]\\
+		&= T\lambda
+\end{align*}
+\end{solution}
+\part $E[T]$ by conditioning on $N$.
+\begin{solution}
+Admittedly, I'm struggling to condition on $N$ being the number of cars that have passed, but I can easily condition on arrival times. To simplify this, note that the expected wait time given that $N$ cars have passed is the same as if 0 cars have passed. So, we can condition on the first arrival time instead of the $n$th arrival time. We will denote the first arrival time as $X$ and observe below
+
+$$E[T|X=x] = \begin{cases}
+0, & x > c\\
+x + E[T], & x \leq c
+\end{cases}$$
+
+That is, if the first arrival time is longer than $c$, the time is 0, but otherwise, one adds $x$ time units plus the new wait time. Therefore, we have
+\begin{align*}
+E[T]			&= E\Big[E[T|X = x]\Big]\\
+				&= \int_0^\infty E[T|X = x] \lambda e^{-\lambda x} \dif x\\
+				&= \int_0^\infty (E[T] + x)\mathbbm{1}\{x \leq c\}\lambda e^{-\lambda x} \dif x \quad \quad \text{Due to memoryless}\\
+				&=  E[T]\int_0^c \lambda e^{-\lambda x} \dif x + \int_0^c x\lambda e^{-\lambda x} \dif x\\
+				&= E[T](1 - e^{-c\lambda}) + \frac{1 - e^{-c\lambda}(1 + c\lambda)}{\lambda}\\
+E[T][1 - (1 - e^{-c\lambda})] &=  \frac{1 - e^{-c\lambda}(1 + c\lambda)}{\lambda}\\
+E[T]e^{-c\lambda}		&= \frac{1}{\lambda}\Big(1 - e^{-c\lambda}(1 + c\lambda)\Big)\\
+E[T] &= \frac{1}{\lambda}\Big(e^{c\lambda}  - c\lambda- 1\Big)
+\end{align*}
+\end{solution}
+\end{parts}
+
+\pagebreak
+\question Bernie Worrell's flashlight requires two batteries to work. He has a stash of $n$ new batteries, labeled $1,2,3,...,n$. At time 0 he inserts batteries 1 and 2. Whenever a battery fails, he immediately replaces it with the lowest-numbered good battery. Suppose the battery lifetimes are independent exponential variables with rate parameter $\mu$ (mean = $1/\mu$). At some random time $T$, a battery will fail and there will be only one good battery left in Bernie's flashlight, and none left in his stash. Let $X$ denote the random label of the the last good battery.
+\begin{parts}
+\part Calculate $P(X = n)$.
+\begin{solution}
+First, let's consider the probability that some battery $X$ will fail before another battery $Y$ given that they have the same rate parameter.
+\begin{align*}
+P(X < Y) 	&= \int_0^\infty \int_0^x \mu e^{-\mu x} \mu e^{-\mu y} \dif y \dif x\\
+				&= \int_0^\infty \mu e^{-\mu x} \left( 1 - e^{-\mu x}	 \right) \dif x\\
+				&= \frac{1}{2}
+\end{align*}
+So, by the memoryless property, the likelihood that when the last two batteries are in place, the probability that one will fail before the last is $\frac{1}{2}$
+\end{solution}
+\part Calculate $P(X = 1)$.
+\begin{solution}
+So, we know that the probability that a battery will last longer than another is $\frac{1}{2}$. Therefore, for the first battery, it will have to last longer than the second with probability $\frac{1}{2}$, and then last longer than the third with probability $\frac{1}{2}$, ..., and the longer than the $n$th. So,
+$$P(X = 1) = \left(\frac{1}{2}\right)^{n-1}$$
+\end{solution}
+\part Calculate $P(X = i)$.
+\begin{solution}
+When battery $i$ is placed into the battery, for it to be the last remaining, the remaining $n - i$ batteries must fail as well as the other battery already in the flashlight. Similar to the logic in part (b), we have
+
+$$P(X = i ) = \left(\frac{1}{2}\right)^{n-i+1}, \quad i \geq 2$$
+
+This, however does not hold for $i = 1$, due to it being inserted at the same time as battery 2, and so
+$$P(X = 1) = P(X = 2)$$
+\end{solution}
+\part Calculate $E[T]$.
+
+\begin{solution}
+The expected time before the flashlight fails is the expected time before $n-1$ batteries fail. Since we are always considering two batteries, by the memoryless property each time a new battery is added, we are considering a new series of time. That is, we are considering $n-1$ cases with exponential distribution and rate parameter $2\mu$ (shown in (a) - (c)). If we let $T_i$ be the individual steps between each battery replacement, then we have
+$$E[T] = \sum_{i=1}^{n-1} E[T_i] = \frac{n-1}{2\mu}$$
+
+
+\end{solution}
+
+\part What is the distribution of $T$?
+\begin{solution}
+As $T$ is defined by the sum of $n-1$ exponential random variables, it will have a Gamma distribution of rate $2\mu$ and shape $n-1$.
+\end{solution}
+\end{parts}
+
+\pagebreak
+\question Customers entering a processing center must be served by server 1, then by server 2, then by server 3. The service times are independent exponential random variables, and server $i$ serves at rate $\mu_i$. Suppose you enter the processing center when it contains a single customer, and that customer is being served by server 3.
+
+\begin{parts}
+\part Calculate the probability that server 3 will still be busy when you move to server 2.
+
+\begin{solution}
+If we let $S_i$ be the wait time for the $i$th server, then we just need to calculate $P(S_1 < S_3)$ which we know for independent exponentials to be
+$$\frac{\mu_1}{\mu_1 + \mu_3}$$
+\end{solution}
+
+\part What is the chance server 3 will still be serving its customer when you move to server 3?
+
+\begin{solution}
+\begin{align*}
+P(S_1 < S_3 \cap S_2 < S_3)	&= P(S_1 < S_3)P(S_2 < S_3)\\
+											&= \frac{\mu_1}{\mu_1 + \mu_3}\frac{\mu_2}{\mu_2 + \mu_3}
+\end{align*}
+\end{solution}
+
+\part If, when you get to server 3 s/he is still serving its customer, you will have to wait for him/her to finish before s/he begins serving you. What is the expected amount of time you spend in the processing center?
+\begin{solution}
+Define $W$ to be the total wait time.
+\begin{align*}
+E[W] 	&= E[S_1] + E[S_2] + E[S_3] + E[S_3]P(S_1 < S_3)P(S_2 < S_3)\\
+			&= \frac{1}{\mu_1} + \frac{1}{\mu_2} + \frac{1}{\mu_3} + \frac{1}{\mu_3}\frac{\mu_1}{\mu_1 + \mu_3}\frac{\mu_2}{\mu_2 + \mu_3}\\
+\end{align*}
+\end{solution}
+\part If, when you enter the center, there is a single customer being processed by server 2, find the expected amount of time you will spend in the system.
+\begin{solution}
+\begin{align*}
+E[W] 	&= E[S_1]\\
+			&+ E[S_2] + E[S_2]P(S_1 < S_2)\\
+			&+ E[S_3] + E[S_3]P(S_1 < S_2)P(S_2 < S_3) + E[S_3]P(S_1 < S_3)P(S_2 < S_1)P(S_2 < S_3)\\
+			&= \frac{1}{\mu_1} + \frac{1}{\mu_2}\left(1 + \frac{\mu_1}{\mu_1 + \mu_2}\right)
+			+ \frac{1}{\mu_3}\left(1 + \frac{\mu_1}{\mu_1 + \mu_2}\frac{\mu_2}{\mu_2 + \mu_3} + \frac{\mu_1}{\mu_1 + \mu_3}\frac{\mu_2}{\mu_1 + \mu_2}\frac{\mu_2}{\mu_2+\mu_3}\right)
+\end{align*}
+\end{solution}
+\end{parts}
+
+\question Erwin Scr\"odinger has a dog and cat. The lifetimes of the pets are exponential random variables with rates $\lambda_d$ and $\lambda_c$, respectively. One of the pets just died (but you don't know which one!). What is the expected additional lifetime of the pet that is still living.
+
+\begin{solution}
+Let $L$ be the remaining lifetime and $L_D, L_C$ be the lifetimes of the dog and cat respectively.
+\begin{align*}
+E[L]		&= E[L|L_D > L_C]P(L_D > L_C) + E[L|L_C > L_D]P(L_C > L_D)\\
+			&= E[L_D]P(L_D > L_C) + E[L_C]P(L_C > L_D)\\
+			&= \frac{1}{\lambda_d}\frac{\lambda_c}{\lambda_c + \lambda_d} + \frac{1}{\lambda_c}\frac{\lambda_d}{\lambda_c + \lambda_d}
+\end{align*}
+\end{solution}
+
+\question Two doctor appointments are scheduled at 1:00 PM and 1:30 PM. Each appointment lasts an exponentially distributed amount of time with mean 30 minutes, and these times are independent. If both patients arrive on time, calculate the total expected amount of time that the 1:30 appointment spends at the doctor's office.
+
+\begin{solution}
+There are two cases that can occur for the patient with the 1:30 PM appointment time. Either the first appointment finishes early/on-time and so patient two's appointment begins on time, or the first appointment goes over and so the second patient will start late. Therefore, using $W$ as the time in office for patient 2 and $\{T_1, T_2\}$ as the respective appointment times,
+\begin{align*}
+W 	&= 	\begin{cases}
+					T_2, &= \text{if }T_1 \leq 30\\
+					(T_1 - 30) + T_2, &= \text{if }T_1 > 30
+				\end{cases}\\
+E[T_2] 	&= E[W | T_1 \leq 30]P(T_1 \leq 30) + E[W | T_1 > 30]P(T_1 > 30)\\
+			&= E[W | T_1 \leq 30]\left(1 - e^{-30/30}\right) + E[W| T_1 > 30]\left(1 - (1 - e^{-30/30})\right)\\
+			&= E[W | T_1 \leq 30]\left(1 - e^{-1}\right) + E[W | T_1 > 30]\left(e^{-1}\right)\\
+			&= E[T_2 | T_1 \leq 30]\left(1 - e^{-1}\right) + E\Big[(T_1 - 30) + T_2 | T_1 > 30\Big]\left(e^{-1}\right)\\
+			&= E[T_2]\left(1 - e^{-1}\right) + \Big(E[T_1 - 30|T_1 > 30] + E[T_2|T_1 > 30]\Big)\left(e^{-1}\right)\\
+			&=  30\left(1 - e^{-1}\right) +  \Big(E[T_1] + E[T_2]\Big)\left(e^{-1}\right)\\
+			&= 30\left(1 - e^{-1}\right) +  60\left(e^{-1}\right)\\
+			&\approx 41.0364\text{ minutes}
+\end{align*}
+
+
+\end{solution}
+
+\question Al and Bob both need kidney transplants. Without one, Al will die in an exponentially distributed amount of time with rate $\mu_A$ and Bob in an exponentially distributed amount of time with rate $\mu_B$. New kidneys arrive according to a Poisson process with rate $\lambda$. The first kidney will go to Al if he is still alive. Otherwise it will go to Bob. 
+
+\begin{parts}
+\part What is the chance that Al receives a new kidney?
+\begin{solution}
+The time until the first kidney arrives is distributed exponentially with rate $\lambda$, and we will let this time be $K$. Thus, we just need to find $P(K < \mu_A)$ which is just
+$$\frac{\lambda}{\lambda + \mu_A}$$
+\end{solution}
+\part What is the chance that Bob receives a new kidney?
+\begin{solution}
+There are two ways to consider this problem. The first is that there is only a rule for the first kidney and any others have no rules so we don't consider them. The second is that the same rules apply in the event that a new kidney arrives.
+
+\textbf{Case One:}
+This is the probability that Al dies first but the kidney arrives before Bob dies, that is
+$$P(L_A < K < L_B) = \frac{L_A}{L_A + K + L_B}\frac{K}{K + L_B}$$
+
+\textbf{Case Two:}
+This is the probability that a kidney arrives before Al or Bob dies and then a Kidney arrives before Bob dies plus to probability from Case One.
+$$P(L_A < K < L_B) + P(K < L_A \cap K < L_B)P(K < L_B) = \frac{L_A + K}{L_A + K + L_B}\frac{K}{K + L_B}$$
+\end{solution}
+\part What happens to the first kidney to arrive if neither Al nor Bob is alive to receive it?
+\begin{solution}
+Hopefully some other person that needs a kidney gets it.
+\end{solution}
+\end{parts}
+
+\question Let $S(t)$ denote the price of a security at time $t$. A popular model for the process $\{ S(t), t \geq 0 \}$ supposes that the price remains unchanged until a shock occurs, at which time the price is multiplied by a random time factor. If we let $N(t)$ denote the number of shocks by time $t$, and let $X_i$ denote the $i$th multiplicative factor, then this model supposes that
+
+$$S(t) = S(0) \prod_{i=1}^{N(t)} X_i$$
+
+where $\prod_{i=1}^{N(t)} X_i$ equals 1 when $N(t) = 0$. Suppose the $X_i$ are independent exponential random variables with rate $\mu$, that that $\{N(t), t \geq 0\}$ is a Poisson process with rate $\lambda$, and that the $\{N(t), t \geq 0\}$ process is independent of the $X_i$, and that $S(0) = s$.
+\begin{parts}
+\part Calculate $E[S(t)]$.
+\begin{solution}
+\begin{align*}
+E[S(t)]		&= E\left[S(0)\prod_{i=1}^{N(t)} X_i\right]\\
+				&= sE\left[E\left[ \prod_{i=1}^{N(t)} X_i \Bigg| N(t) \right] \right]\\
+				&= sE\left[ \prod_{i=1}^{N(t)} E \left[X_i \Bigg| N(t) \right] \right] \quad \quad \text{By independence}\\
+				&= sE\left[ \prod_{i=1}^{N(t)} E \left[X_i \right] \right] = sE\left[ \prod_{i=1}^{N(t)} \frac{1}{\mu} \right] = sE\left[\left(\frac{1}{\mu}\right)^{N(t)} \right]
+\end{align*}
+
+Note that this expectation resembles a probability generating function. The pgf for a Poisson process is
+$$\Pi_X(z) = e^{E[X](z-1)}$$
+so if we let $X = N(t)$ and $z = \frac{1}{\mu}$, we have
+$$E[S(t)] = se^{\lambda t \left(\frac{1}{\mu} - 1\right)}$$
+\end{solution}
+\part Calculate $E[S^2(t)]$.
+\begin{solution}
+\begin{align*}
+E[S^2(t)]		&= E\left[S^2(0)\prod_{i=1}^{N(t)} X_i^2\right]\\
+					&= s^2E\left[ \prod_{i=1}^{N(t)} E \left[X_i ^2\right] \right] = s^2 E\left[ \left(\frac{2}{\mu^2}\right)^{N(t)} \right]\\
+					&= s^2 e^{\lambda t \left(\frac{2}{\mu^2} - 1\right)}
+\end{align*}
+\end{solution}
+\end{parts}
+
+\pagebreak
+
+\question  Let $\{N(t), t \geq 0 \}$ be a Poisson process with rate $\lambda$. For $s < t$ calculate
+\begin{parts}
+\item $P(N(t) > N(s))$;
+\begin{solution}
+\begin{align*}
+P(N(t) > N(s)) 	&= P(N(s,t] > 0)\\
+						&= 1 - P(N(s, t] = 0)\\
+						&= 1 - \dfrac{e^{-\lambda (t-s)}\left[(t-s)\lambda\right]^0}{0!}\\
+						&= 1 - e^{-\lambda(t-s)}
+\end{align*}
+\end{solution}
+\item $P(N(s) = 0, N(t) = 3)$;
+\begin{solution}
+\begin{align*}
+P(N(s) = 0, N(t) = 3)		&= P(N(0,s] = 0)P(N(s,t] = 3)\\
+									&= e^{-\lambda s}\dfrac{e^{-\lambda (t-s)}\left[(t-s)\lambda\right]^3}{3!}
+\end{align*}
+\end{solution}
+\item $E[N(t)|N(s) = 4]$;
+\begin{solution}
+\begin{align*}
+E[N(t)|N(s) = 4] 	&= E[N(s,t]] + 4 \quad \text{by memoryless}\\
+							&= \lambda(t-s) + 4\\
+\end{align*}
+\end{solution}
+\item $E[N(s)|N(t) = 4]$.
+
+\begin{solution}
+We know from the notes and text that if 4 events have been observed from $[0,t]$, then those 4 events are uniformly distributed across that interval with distribution $\frac{4}{t}$. If we want to find the expectation of events from $[0,s]$, then we have
+$$\int_0^s \frac{4}{t} \dif x = \frac{4s}{t}$$
+\end{solution}
+\end{parts}
+
+\question Matt stays awake and works for an exponentially distributed amount of time. His boss comes by to check on him every $T$ time units (so at times $T$, $2T$, $3T$, and so on. Eventually his boss will find him asleep. What is the expected amount of time Matt gets to sleep before the boss wakes him?
+
+\begin{solution}
+If we consider Matt's time awake to be his "lifetime," then we can find his time asleep in each interval by
+$$E[T - X]$$ where $X$ is his time awake in each interval which gives
+\begin{align*}
+E[T - X]		&= T - E[X]\\
+				&= T - \int_0^T x \lambda e^{-\lambda x} \dif x\\
+				&= T - \frac{1 - e^{-T\lambda}(1 + T\lambda)}{\lambda}
+\end{align*}
+
+This is tested with $T = 2$ hours, and $\lambda = 5$ (or rate 5) which gives a result of 1.8001 hours, so Matt can sleep a lot! 
+\end{solution}
+
+\question Let $\{N(t), t \geq 0\}$ be a PP($\lambda$). For $0 < x < y$, prove the conditional distribution of $N(x)$ given $N(y) = n$ is the binomial distribution, and give the parameters. In fact, for $0 < w < x < y$, the conditional distribution of $N(w, x]$ given $N(0, y]$ is binomial$(N[0,y], (x-w)/y)$.
+
+\begin{solution}
+Let $c$ be some constant.
+\begin{align*}
+P(N(x) = c \mid N(y) = n)				&= \frac{P(N(x) = c, N(y) = n)}{P(N(y) = n)}\\
+													&=  \frac{P(N(x) = c, N(x,y) = n-c)}{P(N(y) = n)}\\
+													&= \frac{P(N(x) = c)P(N(x,y) = n-c)}{P(N(y) = n)} \quad \quad \text{By independent increments}\\
+													&= \frac{\frac{e^{-\lambda x} (\lambda x)^c}{c!}  \frac{e^{-\lambda (y-x)} (\lambda (y-x))^{(n-c)}}{(n-c)!}}{\frac{e^{-\lambda y} (\lambda y)^n}{n!}}\\
+													&= \binom{n}{c} \frac{e^{-\lambda x} (\lambda x)^ce^{-\lambda (y-x)} (\lambda (y-x))^{(n-c)}}{e^{-\lambda y} (\lambda y)^n}\\
+													&= \binom{n}{c}\frac{ (\lambda x)^c (\lambda (y-x))^{(n-c)}}{(\lambda y)^n} = \binom{n}{c} \frac{\lambda^c \lambda^{n-c} x^c (y-x)^{n-c}}{\lambda^n y^n}\\
+													&= \binom{n}{c} \frac{x^c (y-x)^{n-c}}{y^n} = \binom{n}{c} x^c y^{n-c}\left(1 - \frac{x}{y}\right)^{n-c}  y^{-n}\\
+													&= \binom{n}{c} \left(\frac{x}{y}\right)^c \left(1 - \frac{x}{y}\right)^{n-c}
+\end{align*}
+which is binomial with parameters $N[0,y]$ and $x/y$.
+\end{solution}
+\pagebreak
+\question People arrive to a bus stop according to a Poisson process with rate $\lambda$. The bus departs at time $t$. Let $X$ denote the total amount of waiting time for all the people who get on the bus at time $t$. Let $N(t)$ denote the number of arrivals by time $t$.
+
+\begin{parts}
+\part What is $E[X|N(t)]$?
+\begin{solution}
+Given that $N(t)$ people arrive which would be uniformly distributed on $(0,t)$, then we want to find the total waiting times which can each be represented as a proportion $\frac{t-s}{t}$ for some customer that arrived at time $s$. Therefore, we have
+$$E[X|N(t)] = N(t) \int_0^t \frac{t-s}{t} \dif s = N(t) \frac{t}{2}$$
+This intuitively makes sense. This is the number of people that arrive times the average waiting time.
+\end{solution}
+\part Argue that $Var(X|N(t)) = t^2N(t)/12$.
+\begin{solution}
+If we have the variance of $N(t)$ uniform $(0,t)$ random variables, then we only need to know the variance of a Uniform random variable with that interval. This results in
+
+$$N(t) \frac{t^2}{12}$$
+\end{solution}
+\part Calculate $Var(X)$.
+\begin{solution}
+We can utilize the conditional variance formula
+$$Var(X) = E[Var(X | N(T))] + Var(E[X|N(t))$$
+
+Utilizing this, we have
+\begin{align*}
+Var(X) 	&= E[Var(X | N(T))] + Var(E[X|N(t))\\
+			&=E[N(t)t^2/12] + Var(N(t)t/2)\\
+			&= \frac{t^2}{12}E[N(t)] + \frac{t^2}{4}Var(N(t))\\
+			&= \frac{t^2 t \lambda}{12} + \frac{t^2 t \lambda}{4}\\
+			&= \frac{\lambda t^3}{3}
+\end{align*}
+\end{solution}
+\end{parts}
+
+\pagebreak
+
+\question A store opens at 8:00 am. Between 8:00 am and 10:00 am, customers arrive according to a Poisson process with constant rate 4 per hour. Between 10:00 am and noon customers arrive according to a Poisson process with constant rate 8 per hour. Between noon and 2:00 pm, the arrival rate steadily increases from 8 per hour at noon to 10 per hour at 2:00 pm. Between 2:00 pm and 5:00 pm the arrival rate steadily decreases from 10 per hour at 2:00 pm to 4 per hour at 5:00 pm. What is the probability distribution of the total number of customers who enter the store on a given day?
+
+\begin{solution}
+I set 8:00 am to be $t = 0$.
+
+We know by the problem statement that
+$$\lambda(t) = \begin{cases}
+4,					& 0 < t < 2\\
+8					& 2 \leq t < 4\\
+t + 4				& 4 \leq t < 6\\
+-2t + 22		& 6 \leq t < 9
+\end{cases}$$
+
+We can find the Poisson parameter by integrating this function.
+
+\begin{align*}
+\int_0^9 \lambda(t) \dif t		&= \int_0^2 4 \dif t + \int_2^4 8 \dif t + \int_4^6 t + 4 \dif t + \int_6^9 -2t + 22 \dif t\\
+											&= 8 + 16 + 18 + 21\\
+											&= 63
+\end{align*}
+
+So the probability distribution is $PP(63)$
+\end{solution}
+\pagebreak
+\question Consider a nonhomogeneous Poisson process whose intensity function $\lambda(t)$ is bounded and continuous. Show that this process is equivalent to a process of counted events from a homogeneous Poisson process with rate $\lambda$, where an event at time $t$ is counted (independently of everything) with probability $\lambda(t)/\lambda$, and $\lambda > \lambda(s)$ for all $s$. 
+
+\begin{solution}
+To show that these are equivalent, we need to verify that this counting process of rate $\lambda$ satisfies the conditions of a non-homogeneous Poisson Process which are
+\begin{itemize}
+\item $N(0) = 0$,
+\item $\{N(t), t \geq 0\}$ has independent increments,
+\item $P(N(t+h) - N(t) = 1) = h\lambda(t) + o(h)$,
+\item $P(N(t+h) - N(t) \geq 2) = o(h)$
+\end{itemize}
+
+As the counting process is a homogenous process, the first two requirements are immediately met, so we need to show item 3 and 4. I will start with condition 4 as it is needed for condition 3. Let $N^*(t)$ be the counted events and $N(t)$ be the nonhomogenous process.
+
+\textbf{Condition Four:}
+As the events are counted with probability $\lambda(t)/\lambda$, and so every event might not be counted, then we have 
+
+$$P(N^*(t, t+h) \geq 2) \leq P(N(t, t+h) \geq 2) = o(h)$$
+
+As $o(h)$ is some function that appraoches 0 as the limit approaches 0, then it is clear that a smaller function will also approach 0, so 
+$$P(N^*(t, t+h) \geq 2) = o(h)$$
+
+\textbf{Condition Three:}
+We must show that
+$$P(N^*(t, t+h) = 1) =  h\lambda(t) + o(h)$$
+
+The two ways that we can observe $N^*(t, t+h) = 1)$ are there being 1 event and it is counted, or there being 2 or more events and only one is counted. This gives
+
+\begin{align*}
+P\Big(N^*(t, t+h) = 1\Big)		&= P\Big(N^*(t, t+h) = 1 \mid N(t, t+h) = 1\Big)P\Big(N(t, t+h) = 1\Big)\\
+											&+ P\Big(N^*(t, t+h) = 1 \mid N(t, t+h) \geq 2\Big)P\Big(N(t, t+h) \geq 2\Big)
+\end{align*}
+
+The second part is some linear combination of $o(h)$ so it reduces to $o(h)$. Therefore, we have
+
+\begin{align*}
+P\Big(N^*(t, t+h) = 1\Big)		&= \frac{\lambda(t)}{\lambda} (h\lambda + o(h)) + o(h)\\
+											&= h\lambda(t) + o(h)
+\end{align*}
+
+
+\end{solution}
+\pagebreak
+\question Let $T_1, T_2, ...$ denote the interarrival times of events of a nonhomogenous Poisson process with intensity function $\lambda(t)$.
+
+\begin{parts}
+\part Are the $T_i$ independent?
+\begin{solution}
+One can verify by the results in part (c) and further cdf calculations that these will have different CDFs and thus not be iid.
+\end{solution}
+\part Are the $T_i$ identically distributed?
+\begin{solution}
+No. See (a).
+\end{solution}
+\part Find the distribution of $T_1$. 
+\begin{solution}
+The distribution of $T_1$ or $P(T_1 > t)$ is equal to the probability that up to point $t$, there have been 0 events or $P(N(t) = 0) = 1 - P(N(t) \geq 0)$ which can be found with the exponential cdf of rate and time $m(t)$. So
+$$P(T_1 > t) = 1 - (1 - e^{-m(t)}) = e^{-m(t)}$$
+\end{solution}
+\end{parts}
+\question An insurance company pays out claims on its life insurance policies in accordance with a Poisson process with rate $\lambda = 5$ per week. If the amount of money paid on each policy is exponentially distributed with mean \$2000, what is the mean and variance of the amount of money paid by the insurance company in a four-week span?
+
+\begin{solution}
+\begin{align*}
+E[R] 	&= E\left[\sum_{i=1}^N X_i\right]\\
+		&= E\left[ E\left[\sum_{i=1} X_i \mid N\right] \right] = E\left[ \sum_{i=1} E[X_i] \right]\\
+		&= E[N*2000] = 20*2000\\
+		&= 40,000\\
+Var[R]		&= E\left[Var\left(\sum_{i=1}^N X_i \mid N \right) \right] + Var\left( E\left[ \sum_{i=1}^n X_i \mid N \right] \right)\\
+				&= E\left[ \sum_{i=1}^N Var\left( X_i \right) \right] + Var\left( \sum_{i=1}^n E\left[  X_i \right] \right) \quad \quad \text{by iid}\\
+				&= E\left[ N*2000^2\right] + Var\left( N*2000 \right)\\
+				&= 2000^2 (E[N] + Var(N))\\
+				&= 2*20*2000^2 = 160000000
+\end{align*}
+\end{solution}
+
+\pagebreak
+
+\question In good years, storms occur according to a Poisson process with rate 3 per unit time, while in other years the occur according to a Poisson process with 5 per unit time. Suppose next year will be a good year with probability 0.3. Let $N(t)$ denote the number of storms during the first $t$ time units of next year.
+
+\begin{parts}
+\part Find $P(N(t) = n)$.
+\begin{solution}
+$$.3\dfrac{e^{-3t}(3t)^n}{n!} + .7\dfrac{e^{-5t}(5t)^n}{n!}$$
+\end{solution}
+\part Is $\{N(t), t \geq 0\}$ a Poisson process?
+\begin{solution}
+There's no way to combine this into a single term, so it is not.
+\end{solution}
+\part Does $\{N(t), t \geq 0\}$ have stationary increments? Why or why not?
+\begin{solution}
+Yes, the probability of a storm occurring when conditioning on the year still relies only on $t$ as shown in (a). 
+\end{solution}
+\part Does $\{N(t), t \geq 0\}$ have independent increments? Why or why not?
+\begin{solution}
+It does not. By the definition in the notes, if for $s \leq t \leq u \leq v$, $N(t) - N(s)$ and $N(v) - N(s)$ are independent, then we have independent increments. However, these intervals would not be independent because they are conditional on what type of year it is.
+\end{solution}
+\part If next year begins with three storms by time $t = 1$, what is the conditional probability it is a good year?
+\begin{solution}
+\begin{align*}
+P(\text{good}\mid N(1) = 3)	&= \frac{P(N(1) = 3 \mid \text{good})P(\text{good})}{P(N(1) = 3 \mid \text{good})P(\text{good}) + P(N(1) = 3 \mid \text{bad})P(\text{bad})}\\
+											&= \frac{.3\dfrac{e^{-3}(3)^3}{3!}}{.3\dfrac{e^{-3}(3)^3}{3!} + .7\dfrac{e^{-5}(5)^3}{3!}}\\
+											&\approx .406
+\end{align*}
+\end{solution}
+\end{parts}
+
+\question Customers arrive to an automatic teller machine according to a Poisson process with rate 12 per hour. The amount of money withdrawn on each transaction is a random variable with mean \$30, and standard deviation \$50. if a withdrawal is negative, it means a positive amount was deposited. The machine is in use for 15 hours per day. Approximately the probability that the total daily withdrawal is less than \$6000.
+
+\begin{solution}
+Using results from Problem 17
+\begin{align*}
+E[R]		&= 		15*12*30\\
+			&= 		5400\\
+Var(R)	&= 		12*15*(30*30 + 50*50)\\
+			&= 		612,000
+\end{align*}
+
+From here, we can use a normal approximation as the Poisson rate is high enough. For $P(R < 6000)$ we can find the z-score of 6000, which is approximately .767. Then we can just use the CDF of the standard normal, and we find that
+$$P(R < 6000) = P(Z < .767) \approx .78$$
+\end{solution}
+\pagebreak
+\question A two-dimensional Poisson process is a process of randomly occurring events in the plane such that
+\begin{parts}
+\part for any region of area $A$ the number of events in that region has a Poisson distribution with mean $\lambda A$ and
+\part the numbers of events in non-overlapping regions are independent random variables.
+\end{parts}
+
+For such a process consider an arbitrary point in the plane and let $X$ denote its distance from its nearest event (where distance is measured in the usual Euclidean way). Show that
+\begin{parts}
+\part $P(X > t) = e^{-\lambda \pi t^2}$;
+
+\begin{solution}
+If we are measuring this in a Euclidean fashion, then $P(X > t)$ is equivalent to $P(N(A) = 0) = 1 - P(N(A) \geq 0)$. So, this reduces to
+$$P(X > t) = 1 - (1 - e^{-\lambda A}) = e^{-\lambda A} = e^{-\lambda \pi t^2}$$
+\end{solution}
+
+\part $E[X] = \dfrac{1}{2\sqrt{\lambda}}$
+\begin{solution}
+First, we find the pdf since we only have the cdf. 
+\begin{align*}
+P(X = x)	&=\frac{\dif}{\dif x}\left( 1 - P(X > x) \right)\\
+				&= -\frac{\dif}{\dif x}  e^{-\lambda \pi t^2}\\
+				&= - \Big(-2 \lambda \pi x e^{-\lambda \pi t^2}\Big)\\
+				&= 2 \lambda \pi x e^{-\lambda \pi t^2}
+\end{align*}
+\begin{align*}
+E[X] 		&= \int_0^\infty x 2 \lambda \pi x e^{-\lambda \pi x^2} \dif x\\
+			&= \frac{1}{2\sqrt{\lambda}} \mathbbm{1}\{\lambda \geq 0\}
+\end{align*}
+\end{solution}
+\end{parts}
+
+\pagebreak
+
+\question Along College St, automobiles pass according to a Poisson process with rate of 20 per minute. If 55\% of all automobiles are cars, 40\% are trucks, and the rest are motorcycles, what is the
+\begin{parts}
+\part probability of observing at least one motorcycle in the next 2 minutes?
+\begin{solution}
+\begin{align*}
+P(N(2) \geq 1) 	&= 1 - P(N_M(2) = 0)\\
+						&=1 - e^{-2}\\
+						&\approx 0.86\\
+\end{align*}
+\end{solution}
+\part probability of observing at least two motorcycles in the next 2 minutes?
+\begin{solution}
+\begin{align*}
+P(N_M(2) \geq 2) 	&= 1 - P(N_M(2) = 0) - P(N_M(2) = 1)\\
+						&= 1 - e^{-2} - 2e^{-2}\\
+						&\approx 0.59
+\end{align*}
+\end{solution}
+\part probability that the fifth car is more than 1 minute away?
+\begin{solution}
+\begin{align*}
+P(N_C(1) \leq 4)	&=\sum_{i=0}^4 \frac{e^{-11}11^i}{i!}\\
+						&\approx .015
+\end{align*}
+\end{solution}
+\part expected number of motorcycles that arrive in the first half hour, given 10,000,000 trucks arrive in that time?
+\begin{solution}
+$$E[N_M(30)] = 30$$
+\end{solution}
+\part expectation and variance of the number of trucks that arrived in the first 77 seconds given 77 trucks arrived in the first 7 minutes?
+\begin{solution}
+\begin{align*}
+E\left[N_T\left(\frac{77}{60}\right) \mid N(7) = 77\right]		&= 77*\frac{\frac{77}{60}}{11}\\
+																						&\approx 14.12\\
+Var\left(N_T\left(\frac{77}{60}\right) \mid N(7) = 77\right)	&= 77*\frac{\frac{77}{60}}{11}\left(1 - \frac{\frac{77}{60}}{11}\right)\\
+																						&\approx 11.53
+\end{align*}
+\end{solution}\pagebreak
+\part expected number of trucks that arrive in the first 7 minutes given 77 trucks arrived in the first 77 seconds.
+\begin{solution}
+\begin{align*}
+E\left[N_T\left(7\right) \mid N\left(\frac{77}{60}\right) = 77\right]	&= 77 + E\left[N_T\left(7 - \frac{77}{60}\right)\right]\\
+		&= 77 + \left(7 - \frac{77}{60}\right)8\\
+		&\approx 122.7
+\end{align*}
+\end{solution}
+\part probability that the 10th automobile is the 2nd truck?
+\begin{solution}
+$$\binom{9}{1}.4*.6^8 * .4 \approx 0.024$$
+\end{solution}
+\part probability that the 10th truck is the 2nd automobile.
+\begin{solution}
+This is 0. If there's been 10 trucks, there's clearly been 2 automobiles unless we aren't considering motorcycles to be automobiles.
+\end{solution}
+\part expected time until the 4th truck?
+\begin{solution}
+\begin{align*}
+\frac{1}{8} + \frac{1}{8} + \frac{1}{8} + \frac{1}{8} = \frac{1}{2} \text{minutes}
+\end{align*}
+\end{solution}
+\part expected time until the 5th truck?
+\begin{solution}
+$$\frac{5}{8}\text{minutes}$$
+\end{solution}
+\part expected time until the 4th truck, given 5 trucks arrived in the first 10 minutes?
+\begin{solution}
+8 minutes.
+\end{solution}
+\part expected time until the 4th truck given 10 trucks arrived in the first 10 minutes?
+\begin{solution}
+4 minutes.
+\end{solution}
+\part expected number of trucks in the first 30 minutes, given there were exactly 15 autos in the first 30 minutes?
+\begin{solution}
+6 trucks.
+\end{solution}
+\part the probability that there were at least 2 trucks in the first five minutes given there were exactly 10 trucks in the first 15 minutes?
+\begin{solution}
+$$1 - \sum_{i=0}^1 \binom{10}{i} (1/3)^i (2/3)^{10-i} \approx 0.90 $$
+\end{solution}
+\part expected number of trucks in the first 10 minutes given there were exactly 15 autos in the first 30 minutes?
+\begin{solution}
+$$.4 * 15 * (1/3) = 2 \text{ trucks}$$
+\end{solution}
+\part expected number of trucks in the first 30 minutes given there were exactly 15 autos in the first 10 minutes?
+\begin{solution}
+\begin{align*}
+E[N_T(30) \mid N(10) = 15] &= .4*15 + E[N_T(10,30)]\\
+											&= 166
+\end{align*}
+\end{solution}
+\part expected value and variance of the profit over the next 3 minutes if cars and trucks pay \$10 tolls, and motorcycles pay \$5 tolls.
+\begin{solution}
+\begin{align*}
+E[R] 						&= E\left[\sum_{i=1}^{N(3)} R_i\right]\\
+							&= E\left[\left[ \sum_{i=1}^{N(3)} R_i \mid N(3)\right] \right]\\
+							&= E\left[ N(3) E[R_i] \right] = 9.75E[N(3)]\\
+							&= 585\\
+Var(R)					&= Var\left(E\left[\sum_{i=1}^{N(3)} R_i \mid N(3)\right] \right) + E\left[Var\left(\sum_{i=1}^{N(3)} R_i \mid N(3)\right) \right]\\
+							&= Var\left(\sum_{i=1}^{N(3)}E\left[ R_i \right] \right) + E\left[\sum_{i=1}^{N(3)}Var\left( R_i \right) \right] \quad \quad \text{By independence}\\
+							&= Var\left(N(3)9.75\right) + E[N(3)Var(R_i)]\\
+							&= E[N(3)]\Big(9.75^2 + .95(9.75 - 10)^2 + .05(5-10)^2\Big)\\
+							&= 60 \Big(9.75^2 + 1.18)\\
+							&\approx 5775
+\end{align*}
+\end{solution}
+\end{parts}
+
+
+
+
+
+\end{questions}
+
+\end{document} 

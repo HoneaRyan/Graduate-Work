@@ -1,0 +1,374 @@
+\documentclass[10pt,a4paper]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\usepackage{commath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{blkarray}
+\usepackage{systeme}
+\usepackage{graphicx}
+\usepackage[left=.75in,right=.75in,top=.75in,bottom=.75in]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{chains}
+\printanswers
+
+
+\author{Ryan Honea}
+\title{Time Series Analysis Homework 2}
+\begin{document}
+\maketitle
+\begin{questions}
+\question Consider a $\{Z_t\}$ be a sequence of iid random variables such that $Z_t \sim Normal(0, \sigma^2)$. Which of the processes are stationary (weak). If the process is stationary compute the mean and autocovariance function.
+\begin{parts}
+\part $X_t = a + bZ_{t} + cZ_{t-2}$
+\begin{solution}
+First, we show that $E[X_t]$ is not time dependent.
+\begin{align*}
+E[X_t] 	&= E[a + bZ_{t} + cZ_{t-2}]\\
+			&= E[a] + bE[Z_{t}] + cE[Z_{t-2}]\\
+			&= a & \text{(Because }E[Z_t] = 0)
+\end{align*}
+Next, we show that $\gamma(t, t+h)$ is not time dependent for all $h \neq 0$.
+\begin{align*}
+\gamma(t, t+h)	&= Cov(X_t, X_{t+h})\\
+						&= Cov(a + bZ_{t} + cZ_{t-2}, a + bZ_{t+h} + cZ_{t+h-2})\\
+						&= Cov(a,a) + Cov(a, bZ_{t+h}) + Cov(a, cZ_{t+h-2})\\
+						&+ Cov(bZ_{t}, a) + Cov(bZ_{t}, bZ_{t+h}) + Cov(bZ_t, cZ_{t + h -2})\\
+						&+ Cov(cZ_{t-2}, a) + Cov(cZ_{t-2}, bZ_{t+h}) + Cov(cZ_{t-2}, cZ_{t+h-2})\\
+						&= 0 \text{ for } h \neq \pm 2\\
+						&= cbVar(Z_t) = cb \text{ for } h = 2\\
+						&= cbVar(Z_{t-2}) = cb \text{ for } h = -2\\
+\end{align*}
+Finally, we show that $Var(X_t) < \infty$ and isn't dependent on $t$.
+\begin{align*}
+Var[X_t] 	&= E[X_t^2] - E[X_t]^2\\
+				&= E[X_t^2] - a^2\\
+				&= E[a^2 + b^2Z_t^2 + c^2Z_{t-2}^2 + 2acZ_{t-2} + 2bcZ_tZ_{t-2} + 2abZ_t] - a^2\\
+				&= a^2 + b^2E[Z_t^2] + c^2E[Z^2_{t-2}] + 2acE[Z_{t-2}] + 2bcE[Z_tZ_{t-2}] + 2abE[Z_t] - a^2\\
+				&= b^2 + c^2 + 2bc
+\end{align*}
+
+So this process is weak stationary and has autocovariance function
+$$\gamma(h) = \begin{cases} 
+b^2 + c^2 + 2bc, & h = 0\\
+bc, & h = \pm 2\\
+0, & \text{o/w}
+\end{cases}$$
+\end{solution}
+\pagebreak
+\part $X_t = Z_t\cos(ct) + Z_{t-1}\sin(ct)$
+
+\begin{solution}
+First we show that $E[X_t]$ is not time dependent.
+\begin{align*}
+E[X_t]	&= E[Z_t\cos(ct) + Z_{t-1}\sin(ct)]\\
+			&= \cos(ct)E[Z_t] + \sin(ct)E[Z_{t-1}]\\
+			&= 0
+\end{align*}
+Next we show that $\gamma(t, t+h)$ is not time dependent for all $h \neq 0$.
+\begin{align*}
+\gamma(t, t+h)	&= Cov(X_t, X_{t+h})\\
+						&= Cov\Big(Z_t\cos(ct) + Z_{t-1}\sin(ct), Z_{t+h}\cos(c(t+h)) + Z_{t+h-1}\sin(c(t+h))\Big)\\
+						&= \cos(ct)\cos(c(t+h))Cov(Z_t, Z_{t+h}) +  \cos(ct)\sin(c(t+h))Cov(Z_t, Z_{t+h-1})\\
+						&+  \sin(ct)\cos(c(t+h))Cov(Z_{t-1}, Z_{t+h}) +  \sin(ct)\sin(c(t+h))Cov(Z_{t-1}, Z_{t+h-1})
+						&= 0 \quad \quad \text{for } |h| > 1\\
+						&= \cos(ct)\sin(c(t+h)) \quad \quad \text{for } h = 1\\
+						&= \sin(ct)\cos(c(t+h)) \quad \quad \text{for } h = -1
+\end{align*} 
+As this is time dependent, the process is not stationary.
+
+
+\end{solution}
+\part $X_t = a + bZ_0$
+\begin{solution}
+First, we show that $E[X_t]$ is not time dependent.
+\begin{align*}
+E[X_t]	&= E[a + bZ_0]\\
+			&= a + bE[Z_0]\\
+			&= a
+\end{align*}
+Next we show that $\gamma(t, t+h)$ is not time dependent for all $h \neq 0$. 
+\begin{align*}
+\gamma(t, t+h)		&= Cov(X_t, X_{t+h})\\
+							&= Cov(a + bZ_0, a + bZ_0)\\
+							&= Var(a + bZ_0)\\
+							&= b^2Var(Z_0)\\
+							&= b^2		
+\end{align*}
+We also showed that the autocovariance is the same as the variance and neither are time dependent. The variance is also less than infinity. So this process is weak stationary with autocovariance function
+$$\gamma(h) = b^2, \quad \forall h$$
+\end{solution}
+\pagebreak
+\part $X_t = Z_tZ_{t-1}$
+\begin{solution}
+Following a similar procedure to the above...
+\begin{align*}
+E[X_t]	&= E[Z_tZ_{t-1}]\\
+			&= E[Z_t]E[Z_{t-1}] \text{ by independence}\\
+			&= 0\\
+\gamma(t, t+h) 	&= Cov(X_t, X_{t+h})\\
+						&= Cov(Z_tZ_{t-1},Z_{t+h}Z_{t+h-1})\\
+						&= E[Z_tZ_{t-1},Z_{t+h}Z_{t+h-1}]\\
+						&= E[Z_t]E[Z_{t-1}]E[Z_{t+h}]E[Z_{t+h-1}] = 0 \text{ for } |h| > 1\\
+						&= E[Z_{t-1}^2]E[Z_t]E[Z_{t-2}] = 1 \text{ for } h = -1\\
+						&= E[Z_{t}^2]E[Z_{t-1}]E[Z_{t+1}] = 1 \text{ for } h = 1\\
+Var(X_t)	&= E[X_t^2]\\
+				&= E[Z_t^2Z_{t-1}^2]\\
+				&= E[Z_t^2]E[Z_{t-1}^2]\\
+				&= 1\\
+\gamma(h)	&= \begin{cases}
+1, & h = 0, \pm 1\\
+0, & \text{o/w}
+\end{cases}
+\end{align*}
+So the expected value doesn't depend on time, the autocovariance doesn't depend on time for all $h$, and the variance is finite. Therefore this process is weak stationary.
+\end{solution}
+\end{parts}
+
+\question The time series process $\{X_t\}$ is given by:
+$$X_t = e_t + \theta e_{t-1}$$
+where $\theta$ is a real number and $e_t = WN(0, \sigma^2)$.
+\begin{parts}
+\part Compute the autocovariance function for the process when $\theta = 0.8$.
+\begin{solution}
+First I'll compute the general solution.
+\begin{align*}
+E[X_t] 	&= E[e_t] + \theta E[e_{t-1}]\\
+			&= 0\\
+\gamma(t + h, t)	&= Cov(X_t, X_{t+h})\\
+							&= Cov(e_t + \theta e_{t-1}, e_{t+h} + \theta e_{t+h-1})\\
+							&= Cov(e_t, e_{t+h}) + \theta Cov(e_t, e_{t+h-1}\\
+							&+ \theta Cov(e_{t-1}, e_{t+h}) + \theta^2 Cov(e_{t-1},e_{t+h-1})\\
+							&= \theta \sigma^2 \text{ for }h = \pm 1 \text{ and } 0 \text{ for } |h| > 1\\
+Var(X_t)				&= E[e_t^2 + 2\theta e_t e_{t-1} + \theta^2 e_{t-1}^2]\\
+							&= \sigma^2 + \sigma^2 \theta^2\\
+							&= \sigma^2(1+\theta^2)\\
+\gamma(h)			&= \begin{cases}
+								\sigma^2(1+\theta^2), & h = 0\\
+								\theta \sigma^2, & h = \pm 1\\
+								0, & \text{o/w}
+							\end{cases}
+\end{align*}
+Given that $\theta = 0.8$, this becomes
+$$\gamma(h)			= \begin{cases}
+								1.64\sigma^2, & h = 0\\
+								.8\sigma^2, & h = \pm 1\\
+								0, & \text{o/w}
+							\end{cases}$$
+\end{solution}
+\part Compute the variance of the sample mean $(X_1 + X_2 + X_3 + X_4)/4$ when $\theta = 0.8$.
+\begin{solution}
+\begin{align*}
+Var\Big((X_1 + X_2 + X_3 + X_4)/4\Big) &= \frac{1}{16}Var(X_1 + X_2 + X_3 + X_4)\\
+															&= \frac{1}{16}Var(e_1 + \theta e_0 + e_2 + \theta e_1 + e_3 + \theta e_2 + e_4 + \theta e_3)\\
+															&= \frac{1}{16}Var\Big(   (\theta + 1)e_1 + (\theta + 1)e_2 + (\theta + 1)e_3 + \theta e_0 + e_4 \Big)\\
+															&= \frac{1}{16}\Big((\theta+1)^2\sigma^2 + \theta^2\sigma^2 + \sigma^2\Big)\\
+															&= \frac{1.8^2 + .8^2 + 1}{16}\sigma^2\\
+															&= .71\sigma^2
+\end{align*}
+\end{solution}
+\end{parts}
+
+\question Show that a strict stationary process with $E(X^2) < \infty$ is also weak stationary.
+
+\begin{solution}
+A process is considered strictly stationary given that for $\{X_t\}$, one has
+$$(\dots, X_{t-1}, X_t, X_{t+1}, \dots) \overset{\text{d}}{=} (\dots, X_{t+h-1}, X_{t+h}, X_{t+h+1}, \dots)$$
+Simply put, the distributions are not time dependent.
+
+This satisfies two properties of weak stationarity,
+\begin{enumerate}
+\item $E[X_t]$ is not dependent on $t$.
+\item $\gamma(t+h,h) = \gamma(h)$
+\end{enumerate} 
+It does not however satisfy the condition that $Var(X_t) < \infty$, so we must show that given a strictly stationary process that $E(X_t^2) < \infty \implies Var(X_t) < \infty$.
+
+Using the Cauchy-Schwarz equality as applied to probability, one has
+$$|Cov(X,Y)|^2 \leq Var(X)Var(Y)$$
+If we let both $X$ and $Y$ be $X_t$, then we have
+\begin{align*}
+|Var(X_t)|^2 	&\leq Var(X_t)^2\\
+|Var(X_t)| 		&\leq Var(X_t)\\
+					&\leq E[X_t^2] - E[X_t]^2\\
+|Var(X_t)| + E[X_t]^2 &\leq E[X_t^2]
+\end{align*}
+
+As the variance and the square of the expectation are both positive, and the sum is less than or equal to some finite number, then both must also be less than or equal to some finite number. Therefore, $E[X_t^2] < \infty \implies Var(X_t) < \infty$
+\end{solution}
+
+\question For a auto-covariance function of a stationary process, prove that $\gamma(h) \leq \gamma(0)$ for all $h$.
+\begin{solution}
+Again, we use the Cauchy-Schwarz inequality but let $X = X_t$ and $Y = X_{t+h}$.
+We therefore have
+\begin{align*}
+|Cov(X_t, X_{t+h})|^2 	&\leq Var(X_t)Var(X_{t+h})\\
+|\gamma(h)|^2			&\leq \gamma(0)\gamma(0) \quad \quad \text{By stationarity}\\
+|\gamma(h)|				&\leq \gamma(0)\\
+\gamma(h)				&\leq \gamma(0) \quad \quad \text{As }\gamma(0)\text{ is positive by definition}
+\end{align*}
+\end{solution}
+\question For a linear random process, prove that $\sum_{h=-\infty}^\infty |\gamma(h)|$ is finite.
+
+\begin{solution}
+We can redefine $\gamma(h) = \sigma^2\sum_{j = -\infty}^\infty \psi_j \psi_{j+h}$ which leads us to have
+$$\sigma^2\sum_{h=-\infty}^\infty \left|\sum_{j = -\infty}^\infty \psi_j \psi_{j+h}\right|$$
+Using the triangle inequality, we have
+$$\sigma^2\sum_{h=-\infty}^\infty \left|\sum_{j = -\infty}^\infty \psi_j \psi_{j+h}\right| \leq \sigma^2\sum_{h=-\infty}^\infty\sum_{j = -\infty}^\infty  \left|\psi_j \psi_{j+h}\right| = \sigma^2\sum_{h=-\infty}^\infty\sum_{j = -\infty}^\infty  \left|\psi_j\right|\left| \psi_{j+h}\right|$$
+So it suffices to show that the right hand side is finite. Setting $k = j + h$, we have
+$$\sigma^2\sum_{k=-\infty+j}^{\infty+j}\sum_{j = -\infty}^\infty  \left|\psi_j\right|\left| \psi_{k}\right| = \sigma^2 \sum_{k = -\infty}^\infty |\psi_k| \sum_{j = -\infty}^\infty |\psi_j|$$ 
+
+For a linear random process, we need $\sum_{i = -\infty}^\infty |\psi_i| < \infty$ and so the above sums are both finite. Therefore, we have shown that the right hand side is finite and therefore
+$$\sum_{h=-\infty}^\infty |\gamma(h)| < \infty$$\end{solution}
+
+\question Let $\{Z_t\}$ be iid N(0,1), and define
+$$X_t = \begin{cases}
+Z_t, & \text{if }t\text{ is even}\\
+\frac{1}{\sqrt{2}}(Z_{t-1}^2 - 1), & \text{if }t\text{ is odd.}
+\end{cases}$$
+Show that $X_t$ is a white noise (WN) process with mean 0 and variance 1. Also prove that they are not iid noise.
+
+\begin{solution}
+First, we show that $E[X_t] = 0$.
+\begin{align*}
+E[X_t]		&= \begin{cases}
+					E[Z_t], & \text{if }t\text{ is even}\\
+					E[\frac{1}{\sqrt{2}}(Z_{t-1}^2 - 1)], & \text{if }t\text{ is odd.}
+				\end{cases}\\
+				&= \begin{cases}
+					0, & \text{if }t\text{ is even}\\
+					\frac{1}{\sqrt{2}}(E[Z_{t-1}^2] - E[1]), & \text{if }t\text{ is odd.}
+				\end{cases}\\
+				&= \begin{cases}
+					0, & \text{if }t\text{ is even}\\
+					0, & \text{if }t\text{ is odd.}
+				\end{cases}\\
+Var(E[X_t]) 		&= \begin{cases}
+							E[Z_t^2],& \text{if }t\text{ is even.}\\
+							E\Big[\Big(\frac{1}{\sqrt{2}}(Z_{t-1}^2 - 1)\Big)^2\Big],& \text{if }t\text{ is odd.}
+						\end{cases}\\
+						&= \begin{cases}
+							1,& \text{if }t\text{ is even.}\\
+							\frac{1}{2}E\Big[Z_{t-1}^4 - 2Z_{t-1}^2 + 1\Big],& \text{if }t\text{ is odd.}
+						\end{cases}\\
+						&= \begin{cases}
+							1,& \text{if }t\text{ is even.}\\
+							\frac{1}{2}\Big(E[Z_{t-1}^4] - 2E[Z_{t-1}^2] + 1\Big),& \text{if }t\text{ is odd.}
+						\end{cases}\\
+						&= \begin{cases}
+							1,& \text{if }t\text{ is even.}\\
+							1,& \text{if }t\text{ is odd.}
+						\end{cases}
+\end{align*}
+We have shown that it is a white noise process with mean 0 and variance 1. We can show that they are iid noise if
+$$Cov(X_t, X_{t+h}) = 0 \quad \forall h$$
+Consider the following case.
+\begin{align*}
+Cov(X_1, X_2)		&= Cov\left(Z_t, \frac{1}{\sqrt{2}}(Z_{t-1}^2 - 1)\right)\\
+							&= \frac{1}{\sqrt{2}} E[Z_{t-1}^3 - Z_{t-1}]\\
+							&= \frac{1}{\sqrt{2}} (2 - 0)\\
+							&= \sqrt{2}
+\end{align*}
+And so it is not iid noise.
+\end{solution}
+
+\question For a linear random process, we need $\sum_{j=-\infty}^\infty |\psi_j| < \infty$. Do you think that condition can be replaced by $\sum_{j=-\infty}^\infty \psi_j^2 < \infty$? Explain your answer.
+
+\begin{solution}
+No, it can't. Consider the following series
+$$\psi_j = \begin{cases}
+1, & j = 0\\
+\frac{1}{j}, &\text{otherwise}
+\end{cases}$$
+In the first case,
+$$\sum_{j=-\infty}^\infty |\psi_j|= 1 + 2\sum_{j = 1}^\infty \frac{1}{j}$$
+which is not convergent (as it contains the harmonic series) and thus implies that the $\psi_j$s cannot constitute a linear process.
+
+In the second case,
+$$\sum_{j=-\infty}^\infty \psi_j^2 = 1 + \sum_{i=1}^\infty \frac{1}{j^2}$$
+which is convergent (as the series is a $p$-series with $p = 2$). So there exists a series for which the second case converges and the first does not, so we cannot replace the first case with the second.
+\end{solution}
+\pagebreak
+\question Consider a time series process as:
+$$X_t = U_1\sin(2\pi\omega t) + U_2 \cos (2\pi \omega t)$$
+where $U_1$ and $U_2$ are independent random variables with mean 0 and variance $\sigma^2$. Prove that the process is weak stationary.
+
+\begin{solution}
+Following the same routine as in problem one...
+\begin{align*}
+E[X_t]	&= E[U_1\sin(2\pi \omega t) + U_2 \cos(2\pi\omega t)]\\
+			&= \sin(2\pi \omega t)E[U_1] + \cos(2\pi\omega t)E[U_2]\\
+			&= 0\\
+\gamma(t, t+h)		&= Cov(X_t, X_{t+h})\\
+							&= Cov\Big(U_1\sin(2\pi \omega t) + U_2 \cos(2\pi\omega t), U_1\sin(2\pi \omega(t + h) + U_2 \cos(2\pi\omega (t+h)\Big)\\
+							&= \Big(\sin(2\pi\omega t)\sin(2\pi\omega (t + h)\Big)Cov(U_1,U_1) + \Big(\cos(2\pi\omega t)\cos(2\pi\omega (t + h)\Big)Cov(U_2,U_2) \\
+							&= \Big(\sin(2\pi\omega t)\sin(2\pi\omega (t + h)\Big)\sigma^2 + \Big(\cos(2\pi\omega t)\cos(2\pi\omega (t + h)\Big)\sigma^2 \\
+							&= \cos\Big(2\pi\omega t - 2\pi\omega(t + h)\Big)\sigma^2\\
+							&= \cos(2\pi\omega h)\sigma^2\\
+Var(X_t)		&= E\Big[U_1^2 \sin(2\pi\omega t)^2 + 2U_1U_2\sin(2\pi\omega t)\cos(2\pi\omega t) + U_2^2 \cos(2\pi\omega t)^2\Big]\\
+					&= \sigma^2\sin(2\pi\omega t)^2 + \sigma^2 \cos(2\pi\omega t)^2\\
+					&= \sigma^2
+\end{align*}
+So it is weak stationary with autocovariance function
+$$\gamma(h) 	= \begin{cases}
+\sigma^2, & h = 0\\
+\cos(2\pi\omega h)\sigma^2, & o/w\\
+\end{cases}$$
+\end{solution}
+\pagebreak
+\question Suppose we want to predict a stationary time series $\{X_t\}$ with zero mean and autocovariance function $\gamma(h)$ at some time in the future, say $t + l$ for $l > 0$. Assume we use the predictor as $\hat{X}_{t+l} = AX_t$ for $A \in R$. Prove that the mean-square prediction error is minimized by choosing $A = \dfrac{\gamma(l)}{\gamma(0)}$.
+
+\begin{solution}
+The mean squared error in this case is defined to be 
+$$E\Big[(X_{t+l} - AX_t)^2\Big]$$
+We will show that Mean Squared error is minimized by choosing
+$$A = \frac{\gamma(l)}{\gamma(0)}$$ by taking first and second derivatives.
+
+First, we show that $Covar(X_t, X_{t+h}) = E[X_{t+h}X_t]$
+\begin{align*}
+Covar(X_t, X_{t+h})		&= E[(X_t - E[X_t])(X_{t+h} - E[X_{t+h}]\\
+									&= E[(X_t - 0)(X_{t+h} - 0)]\\
+									&= E[X_{t+h}X_t]	\quad \quad \text{Because }\{X_t\}\text{ has mean 0}.\\
+E\Big[(X_{t+l} - AX_t)^2\Big] &= E[X_{t+l}^2] - 2E[X_{t+l}AX_t] + A^2E[X_t^2]\\
+											&= A^2Var(X_t) + E[X_{t+l}^2] - 2AE[X_{t+l}X_t]\\
+\frac{\dif MSE}{\dif A}			&= 2AVar(X_t) - 2E[X_tX_{t+l}]\\
+											&= 2A\gamma(0) - 2\gamma(l)\\
+						\gamma(l)		&= A\gamma(0)\\
+						A					&= \frac{\gamma(l)}{\gamma(0)}\\
+\frac{\dif^{\text{ } 2} MSE}{\dif A^2}		&= 2Var(X_t) \quad \quad \text{Which must be positive}
+\end{align*}
+We have shown then that the MSE is minimized by $$A = \frac{\gamma(l)}{\gamma(0)}$$
+\end{solution}
+\pagebreak
+\question Consider two uncorrelated stationary sequences $\{X_t\}$ and $\{Y_t\}$, show that $\{X_t + Y_t\}$ is a stationary sequence and the autocovariance function of $\{X_t + Y_t\}$ is the sum of the autocovariance functions of $\{X_t\}$ and $\{Y_t\}$.
+
+\begin{solution}
+Firstly, observe that as expectation is a linear operator,
+$$E[X_t + Y_t] = E[X_t] + E[Y_t]$$
+and since both must be time independent by stationarity, their sum is also time independent.
+
+Now, if we consider the autocovariance
+\begin{align*}
+\gamma(t, t+h)	&= Cov(X_t + Y_t, X_{t+h} + Y_{t+h})\\
+						&= Cov(X_t, X_{t+h}) + Cov(X_t, Y_{t+h}) + Cov(Y_t, X_{t+h}) + Cov(Y_t, Y_{t+h})\\
+						&= Cov(X_t, X_{t+h}) + Cov(Y_t, Y_{t+h}) \quad \quad \text{As }X_t\text{ and }Y_t\text{ are uncorrelated}\\
+						&= \gamma_{X_t}(h) + \gamma_{Y_t}(h) \quad \quad \text{As }X_t\text{ and }Y_t\text{ are stationary}
+\end{align*}
+The sum of two time independent functions again will be time independent. Finally, we show that variance is less that infinity.
+\begin{align*}
+Var(X_t + Y_t) 	&= E[X^2 + 2XY + Y^2] - (E[X] + E[Y])^2\\
+						&= E[X^2] + 2E[X][Y] + E[Y^2] - E[X]^2 - 2E[X]E[Y] - E[Y]^2\\
+						&= E[X^2] - E[X]^2 + E[Y^2] - E[Y]^2\\
+						&= Var(X_t) + Var(Y_t)
+\end{align*}
+Since the finite sum of two finite functions is also finite, then $Var(X_t + Y_t)$ is also finite.
+
+Thus, the process is weak stationary with autocovariance function
+$$\gamma(h) = 
+Cov(X_t, X_{t+h}) + Cov(Y_t, Y_{t+h}) = \gamma_{X_t}(h) + \gamma_{Y_t}(h) \quad \forall \quad h$$
+showing that the autocovariance function for $\{X_t + Y_t\}$ is the sum of the autocovariance functions of $\{X_t\}$ and $\{Y_t\}$.
+\end{solution}
+\end{questions}
+\end{document}

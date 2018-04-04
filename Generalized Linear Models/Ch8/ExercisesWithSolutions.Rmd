@@ -1,0 +1,220 @@
+---
+title: "Assignment Seven"
+author: "Ryan Honea"
+date: "10/16/2017"
+header-includes:
+   - \usepackage{bbm}
+   - \usepackage{bm}
+   - \newcommand{\infmat}{\bm{\mathcal{J}}}
+   - \usepackage{booktabs}
+   - \usepackage{multirow}
+   - \usepackage{tcolorbox}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(nnet)
+require(MASS)
+```
+
+## Housing Conditions in Copenhagen
+
+First, we load the ```copen``` data from the Princeton course website and then use ```head``` to see the first few rows of the data. 
+
+```{r, echo = TRUE}
+copen <- read.table("http://data.princeton.edu/wws509/datasets/copen.dat")
+head(copen)
+```
+
+We can see several ordinal columns of data after the ```head``` command.
+
+```{r, echo = TRUE}
+copen$g <- rep(1:24, rep(3,24))
+```
+
+\begin{tcolorbox}
+\textbf{Question (a): } What is the reason for creating the column called ```g``` in the ```copen``` dataframe?\\
+\\
+It classifies each observation by its covariate pattern, which in the case of this model is covariate patterns 1 to 24 with 3 repetitions each time. So, $g = 1$ is the 1st covariate pattern and $g = 5$ is the 5th coviarate pattern and so forth. 
+
+\end{tcolorbox}
+
+We now calculate the log-likelihood of the saturated multinomial logit model where each of the covariate patterns has its own distriution.
+
+\begin{tcolorbox}
+\textbf{Question (b): } Why do they bother building the multinomial logistic model when the response is clearly ordinal?\\
+\\
+As stated, the multinomial model is saturated because of every covariate pattern has its own distriution. It is useful for comparitive purposes when we develop other models.
+\end{tcolorbox}
+
+```{r, echo = TRUE}
+msat <- multinom(satisfaction ~ as.factor(g), weights = n, data=copen)
+logLik(msat)
+```
+
+\begin{tcolorbox}
+\textbf{Question (c): } Build the multinomial model as they have, and run summary(msat) to view the output.\\
+\\
+See below.
+\end{tcolorbox}
+
+```{r, echo = TRUE}
+summary(msat)
+```
+
+\pagebreak
+
+## The Proportional Odds Model
+
+The first step in fitting the additive ordered logit model is to indicate a reference level. This is done in the bhhhelow code alongside ordering outcomes from low to high.
+
+```{r, echo = TRUE}
+copen$satisfaction <- ordered(copen$satisfaction,c("low","medium","high"))
+
+copen$housing   <- relevel(copen$housing,  ref="tower")
+
+copen$influence <- factor(copen$influence,c("low","medium","high"))
+
+copen$contact   <- relevel(copen$contact,  ref="low")
+```
+
+\begin{tcolorbox}
+\textbf{Question (d): } As a preprocessing step for building the proportional odds model, they set the ordering on the response with the “ordered()” function, and set reference levels for the explanatory factors with the “relevel()” function. Are both of these steps absolutely necessary, or just preferred? What could go wrong if the response is not ordered properly when doing proportional odds? How does using “relevel()” make comparing models easier?\\
+\\
+For the proportional odds model, having proper ordering is required as compared to the nominal where it is not. The culumative odds for the $j$th model are
+$$
+\frac{P(z\leq C_j)}{P(z > C_j)} = \frac{\pi_1 + \pi_2 ... \pi_j}{\pi_{j+1} + ... + \pi_J}
+$$
+where $C_j$ are cutpoints in the model and so proper ordering is necessary to create proper cutpoints.
+
+In the case of the \verb|relevel()| commands, which are being used on nominal factors, it aids in comparison by ensuring that all additives models' $\beta$s refer to the same associated factors.
+\end{tcolorbox}
+
+\pagebreak
+\begin{tcolorbox}
+\textbf{Question (e): } After ordering the response and setting reference levels for the explanatory factors, build the proportional odds model as they have and run summary(madd) to view the output. Compare the outputs of the two models (multinomial logistic vs. proportional odds).  Specifically, compare the log-likelihood values, deviances, and model coefficients (you can get these beta’s with > coef(msat) and > coef(madd)).  Which model do you prefer and why?\\
+\\
+See below for model and log-likelihoods. As the log-likelihood of the model that uses an ordinal factor is not significantly larger (in magnitude), and it is far easier to interpret and understand than the multinomial model, I am far more likely to use the ordinal model.
+\end{tcolorbox}
+
+```{r, echo = TRUE}
+madd <- polr(satisfaction ~ housing + influence + contact, weights = n, data = copen)
+logLik(madd)
+logLik(msat)
+summary(madd)
+```
+
+\begin{tcolorbox}
+\textbf{Question (f): } One of these models results in substantially more output (more coefficients). Which one is it and why? Based on this, which model (multinomial logistic or proportional odds) is easier to understand?\\
+\\
+Definitely the ordinal model. It is an easily interpeted equation having only six coefficients and 2 intercepts compared to the many coefficients of the multinomial model.
+\end{tcolorbox}
+
+\pagebreak
+
+\begin{tcolorbox}
+\textbf{Question (g): } Note the deviance calculate \verb|> 2*(logLik(msat) - logLik(madd))|. Now it seems that the multinomial model is considered to be saturated, and they are using it to compute residual deviance for the proportional odds model. Is the multinomial model a saturated model and is this appropriate?\\
+\\
+Yes, it is appropriate. The multinomial model treats every covariate pattern as its own group, and so it is indeed a saturated model. The deviance is calculated by two times the difference between the alternate model and the saturated model.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Question (h): } Use the output resulting from \verb|> 2*(logLik(msat) - logLik(madd))| to obtain a p-value. Take care to use correct degrees of freedom. What does this p-value tell you?\\
+\\
+Based on this p-value below (0.813), we fail to reject that this model doesn't fit the data. As we fail to reject and the simpler model works, it would make sense to continue using the ordinal model.
+
+\end{tcolorbox}
+```{r, echo = TRUE}
+D <- 2*(logLik(msat) - logLik(madd))
+cat(pchisq(D, 40))
+```
+
+## Models with Interactions
+Now, we create models with two-factor interactions, but to find which is the best, we check all possible two factor interactions and use the \verb|update| command to update the model in temporary memory.
+
+```{r, echo = TRUE}
+deviance(madd) - deviance(update(madd, . ~ . + housing:influence))
+deviance(madd) - deviance(update(madd, . ~ . + housing:contact))
+deviance(madd) - deviance(update(madd, . ~ . + influence:contact))
+```
+
+Obviously the largest change is using the housing and influence interaction.
+
+\begin{tcolorbox}
+\textbf{Question (i): } Next investigate whether any of the two-way interactions of explanatory variables are significant.  Run the R code there, comparing the deviance of madd and those of the three models with two-way explanatory interactions.  The first line of text beneath this code reads, “The interaction between housing and influence reduces the deviance by 25.22 at the expense of only six d.f., so it is worth a second look.”  Is this a typo?  How did they calculate this 25.22 reduction in deviance?\\
+\\
+Yes, this is a typo. The 25.22 reduction in deviance is the difference between the model with housing:influence and the saturated model. The correct change in deviance between the ordinal model and the ordinal model with housing:influence is 22.51.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Question (j): } Fit the new proportional odds model that now includes the housing:influence interaction:
+\begin{verbatim}
+
+> mint <- update(madd, . ~ . + housing:influence)
+> summary(mint)
+
+\end{verbatim}
+Is the model an improvement over the proportional odds model without any interaction terms? Explain.\\
+\\
+With a p-value of approximately 0 for the difference in deviances at 6 degrees of freedom, the difference is definitely significant. So, it is quite the improvement. 
+\end{tcolorbox}
+
+```{r, echo = TRUE}
+mint <- update(madd, . ~ . + housing:influence)
+summary(mint)
+D_1 <- deviance(mint) - deviance(madd)
+D_2 <- deviance(mint) - deviance(msat)
+cat(pchisq(D_1, 6),"\n")
+```
+
+\begin{tcolorbox}
+\textbf{Question (k): } Calculate the percentage difference in odds of reporting high satisfaction (relative to medium or low satisfaction) for respondents who have high contact with neighbors versus those with low neighbor contact.\\
+\\
+This is done in the below code. We only need to find the percentage difference from the normal because the only two factor levels are low and high. So, the low is included in the intercept. The difference in odds, therefore, is 45.1 percent.
+\end{tcolorbox}
+```{r, echo = TRUE}
+b <- coef(mint)
+b["contacthigh"]/(pi/sqrt(3))
+```
+
+Now, to see the joint effects of influence and housing, we create the below model and use the graph to visualize various probability differences.
+
+```{r, echo = TRUE, warning = FALSE}
+mint2 <- polr(satisfaction ~ contact + housing:influence, weights = n, data = copen)
+HI <- matrix(c(coef(mint2)[-1],0),4,3)
+HI <- (HI - HI[1,1])/(pi/sqrt(3))
+rownames(HI) <- levels(copen$housing)
+colnames(HI) <- levels(copen$influence)
+trio <- c("#ddeeff","#80aae6", "#3366cc")
+barplot(t(HI), beside=TRUE, col=trio, border=NA)
+legend("bottomleft", fill=trio, legend=levels(copen$influence), bty="n")
+```
+
+```{r, echo = TRUE}
+quartet <- c("#ddeeff", "#9dc1ee","#6593dd", "#3366cc")
+barplot(apply(HI,1,function(x)x-x[1]), beside=TRUE, col=trio, border=NA)
+legend("toplef", fill=trio, legend=levels(copen$influence), bty="n")
+barplot(apply(HI,2,function(x)x-x[1]), beside=TRUE, col=quartet, border=NA)
+legend("bottomright", fill=quartet, legend=levels(copen$housing), bty="n")
+```
+
+\begin{tcolorbox}
+\textbf{Question (l): } In the next part, Dr. Rodriguez investigates housing type, influence, and the interaction between the two by standardizing the coefficients (or effects) of the explanatory variales in a new model (one that just uses contact and the housing:influence interaction). Make all the graphs. Write two or three sentences that summarize what these graphs indicate about housing satisfaction.\\
+\\
+The first graph describes effects on the probability differences on satisfaction for various effects. The second is similar to the first but uses the low influence as a reference point. The final graph is essentially the reverse of the first.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Question (m): } Using the "mint" model (the one with the three main factors and one interaction), use the predict() or fitted() command to obtain the probability estimates for each of the 24 groups. Then report the estimated probabilities of low, medium, and high satisfaction for terraced tenants with medium influence and both contact levels. If you lived in a terraced living situation with medium influence, would you rather have low or high contact with your neighbors?\\
+\\
+Based on the output below, one would want high contact with their neighbors because the estimated probability of having high satisfaction is approximately 2% higher than when having low contact.
+
+\end{tcolorbox}
+
+```{R, echo = TRUE}
+copen$probs <- predict(mint, type="probs")
+terraceHigh<- subset(copen, housing == "terraced" & influence == "medium" 
+                     & satisfaction == "high")
+print(terraceHigh[,c("contact","probs")])
+```

@@ -1,0 +1,184 @@
+---
+title: "Chapter Nine"
+author: "Ryan Honea"
+date: "10/9/2017"
+header-includes:
+   - \usepackage{bbm}
+   - \usepackage{bm}
+   - \newcommand{\infmat}{\bm{\mathcal{J}}}
+   - \usepackage{booktabs}
+   - \usepackage{multirow}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(ggplot2)
+```
+
+## Exercise Two
+#### Question
+The data in the table below (Table 9.13) are numbers of insurance policies, $n$, and numbers of claims, $y$, for cars in various insurance categories, $CAR$, tabublated by age of policy holder, $AGE$, and district where the policy holder lived ($DIST = 1$, for London and other major cities, and $DIST = 0$, otherwise). The table is derived from the $CLAIMS$ data set in Aitkin et al. (2005) obtained from a paper by Baxter et al. (1980).
+
+\begin{center}
+\begin{tabular}{@{}ccrrlrr@{}}
+\toprule
+      &       & \multicolumn{2}{c}{DIST = 0}                      &  & \multicolumn{2}{c}{DIST = 1}                      \\ \cmidrule(lr){3-4} \cmidrule(l){6-7} 
+$CAR$ & $AGE$ & \multicolumn{1}{c}{$y$} & \multicolumn{1}{c}{$n$} &  & \multicolumn{1}{c}{$y$} & \multicolumn{1}{c}{$n$} \\ \midrule
+1     & 1     & 65                      & 317                     &  & 2                       & 20                      \\
+1     & 2     & 65                      & 476                     &  & 5                       & 33                      \\
+1     & 3     & 52                      & 486                     &  & 4                       & 40                      \\
+1     & 4     & 310                     & 3259                    &  & 36                      & 316                     \\
+2     & 1     & 98                      & 486                     &  & 7                       & 31                      \\
+2     & 2     & 159                     & 1004                    &  & 10                      & 81                      \\
+2     & 3     & 175                     & 1355                    &  & 22                      & 122                     \\
+2     & 4     & 877                     & 7660                    &  & 102                     & 724                     \\
+3     & 1     & 41                      & 223                     &  & 5                       & 18                      \\
+3     & 2     & 117                     & 539                     &  & 7                       & 39                      \\
+3     & 3     & 137                     & 697                     &  & 16                      & 68                      \\
+3     & 4     & 477                     & 3442                    &  & 63                      & 344                     \\
+4     & 1     & 11                      & 40                      &  & 0                       & 3                       \\
+4     & 2     & 35                      & 148                     &  & 6                       & 16                      \\
+4     & 3     & 39                      & 214                     &  & 8                       & 25                      \\
+4     & 4     & 167                     & 1019                    &  & 33                      & 114                     \\ \bottomrule
+\end{tabular}
+\end{center}
+
+#### Solution
+Below is just data entry.
+```{r, echo = TRUE}
+df <- data.frame(
+  CAR = CAR <- rep(rep(1:4, each = 4),2),
+  AGE = AGE <- rep(rep(1:4, 4),2),
+  DIST = DIST <- rep(0:1, each = 16),
+  y = y <- c(  65,  65,  52, 310,  98, 159, 175, 877,
+               41, 117, 137, 477,  11,  35,  39, 167,
+                2,   5,   4,  36,   7,  10,  22, 102,
+                5,   7,   16, 63,   0,   6,   8,  33),
+  n = n <- c( 317, 476, 486,3259, 486,1004,1355,7660,
+              223, 539, 697,3442,  40, 148, 214,1019,
+               20,  33,  40, 316,  31,  81, 122, 724,
+               18,  39,  68, 344,   3,  16,  25, 114)
+)
+```
+
+**(a)**: Calculate the rate of claims $y/n$ for each category and plot the rates by $AGE$, $CAR$, and $DIST$ to get an idea of the main effects of those factors.
+
+*Solution: *
+```{r, echo = TRUE}
+df$rate <- df$y/df$n
+par(mfrow = c(1,3))
+plot(df$DIST, df$rate, xlab= "District", ylab = "Claims per Insurance Policy")
+plot(df$CAR, df$rate, xlab= "Insurance Category", ylab = "Claims per Insurance Policy")
+plot(df$AGE, df$rate, xlab= "Age of Policy Holder", ylab = "Claims per Insurance Policy")
+```
+
+Based on these plots, it appears that the difference between districts is just an increased variance of rates in lower population areas. Insurance categories from 1 to 4 seem to have increasing rates as well as increasing variance per rate level. From the youngest age group to the second youngest, there is an increase, but a decrease following that in claim rates.
+
+**(b)**: Use Poisson regression to estimate the main effects (each treated as categorical and modeled using indicator variables) and interaction terms.
+
+*Solution: * First, we convert ```CAR```, ```AGE```, and ```DIST``` into factors so that they are treated categorically.
+
+```{r, echo = TRUE}
+df$CAR <- factor(df$CAR); df$AGE <- factor(df$AGE); df$DIST <- factor(df$DIST)
+poismod <- glm(y ~ CAR*AGE*DIST + offset(log(n)), data = df,
+               family = poisson(link = "log"))
+summary(poismod)
+```
+
+**(c)**: Based on the modelling in (b), Aitkin et al. (2005) determined that all the interactions were unimportant and decided that $AGE$ and $CAR$ could could be treated as though they were continuous variables. Fit a model incorpororating these features and compare it with the best model in (b). What conclusions do you reach?
+
+*Solution: * First, we convert ```CAR``` and ```AGE``` into numeric values and then create the other model.
+
+```{r, echo = TRUE}
+df$CAR <- as.numeric(df$CAR); df$AGE <- as.numeric(df$AGE)
+poismod2 <- glm(y ~ CAR + AGE + DIST + offset(log(n)), data = df,
+                family = poisson(link = "log"))
+summary(poismod2)
+```
+
+We can check whether or not this model fits well by comparing it to the saturated model which was found in (b). This is the residual deviance noted in the summary.
+
+```{r, echo = TRUE}
+p <- pchisq(poismod2$deviance, 28)
+cat("p-value: ", p)
+```
+
+Based on the p-value, there is not enough evidence to suggest that this model does not fit the data and so we would prefer to use this simpler model.
+
+\pagebreak
+
+## Exercise Three
+#### Question
+This question relates to the flu vaccine trial data in the table below (Table 9.6).
+
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+         & \multicolumn{4}{c}{Response}     \\
+         & Small & Moderate & Large & Total \\ \midrule
+Placebo & 25    & 8        & 5     & 38    \\
+Vaccine  & 6     & 18       & 11    & 35    \\ \bottomrule
+\end{tabular}
+\end{center}
+
+#### Solution
+Below is data entry.
+```{r, echo = TRUE}
+vacctrial <- as.table( matrix(
+  c(25, 8, 5, 6, 18, 11), byrow = TRUE, ncol = 3)
+)
+colnames(vacctrial) <- c("Small", "Moderate", "Large")
+rownames(vacctrial) <- c("Vaccine", "Placebo")
+```
+
+**(a)**: Using a conventional chi-squared test and an appropriate log-linear model, test the hypothesis that the distribution of responses is the same for the placebo and vaccine groups.
+
+*Solution: * The chi-squared test is performed below.
+```{r, echo = TRUE}
+require(MASS)
+chisq.test(vacctrial)
+```
+
+With at least 95% confidence, we reject the null hypothessis that the distribution of the responses are the same for the placebo and vaccine groups. We test this again using the additive log-linear model.
+
+```{r, echo = TRUE}
+df <- as.data.frame(vacctrial)
+colnames(df) <- c("Treatment", "Response", "Freq")
+df$Treatment <- relevel(df$Treatment, ref = "Placebo")
+df$Response <- relevel(df$Response, ref = "Small")
+poismod <- glm(Freq ~ Treatment + Response, data = df,
+               family = poisson(link = "log"))
+fits <- c(fitted.values(poismod))
+X2 <- sum(((df$Freq - fits)/sqrt(fits))^2)
+1 - pchisq(X2, 2)
+```
+
+With an equal p-value, we make the same conclusion.
+
+**(b)**: For the model corresponding to the hypothesis of homogeneity of response distributions, calculate the fitted values, the Pearson and deviance residuals, and the goodness of fit statistics $\chi^2$ and $D$. Which of the cells of the table contribute most to $\chi^2$ (or $D$)? Explain and interpret these results.
+
+*Solution: *  We test the hypothesis of homogeneity by comparing the saturated and the additive model.
+
+```{r, echo = TRUE}
+poissat <- glm(Freq ~ Treatment*Response, data = df,
+               family = poisson(link = "log"))
+dev.res <- sign(df$Freq - fits) *(sqrt(2*(df$Freq*log(df$Freq/fits)-(df$Freq-fits))))
+deviance <- sum(dev.res^2)
+deviance
+2*(logLik(poissat) - logLik(poismod))
+```
+
+These give the same results as before and so we see homogeneity of response distribution.
+
+**(c)**: Re-analyze these data using ordinal logistic regression to estimate cut-points for for a latent continuous response variable and to estimate a location shift between the two treatment groups. Sketch a rough diagram to illustrate the model which forms the conceptual base for this analysis (see Exercise 8.4).
+
+*Solution: * 
+```{r, echo = TRUE}
+require(nnet)
+ordmod <- polr(Response ~ Treatment, weights = Freq, data = df)
+df$probs <- predict(ordmod, type = "probs")
+df[1:2,c("Treatment", "probs")]
+shift <- log((df[2,4][1]*(df[1,4][2]+df[1,4][3]))/(df[1,4][1]*(df[2,4][2]+df[2,4][3])))
+cat("Estimated Shift:", shift)
+```
