@@ -1,0 +1,131 @@
+---
+title: "Unemployment Data Analysis"
+author: "Ryan Honea"
+date: "4/24/2018"
+header-includes:
+   - \institute{Austin Peay State University}
+   - \logo{\includegraphics[scale=.05]{AP}}
+output: 
+  beamer_presentation:
+    theme: "CambridgeUS"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("knitr")
+library("dplyr")
+library("readr")
+library("quantmod")
+library("TSA")
+library("astsa")
+library("fGarch")
+library("forecast")
+library("car")
+x <- read_csv("data7.csv")
+x <- ts(x[,2])
+```
+
+## Initial Plotting
+```{r, echo = FALSE}
+plot(x, ylab = "Unemployment Rate", xlab = "Time Index",
+     main = "Unemployment Data 01/01/1948 - 03/01/2018")
+```
+
+## Time Series Display
+```{r, echo = FALSE}
+tsdisplay(x)
+```
+
+## Analysis on Plots
+
+* The Unemployment Data covers January 1948 to March 2018 and thus covers many times of uncertainty
+* Jumps from postwar uncertainty, 1980s recessions, 2000s recession
+* These periods of volatility lend itself to using an ARMA GARCH model.
+
+## Possible Models
+* Possible model are
+    * ARMA(1,1) $\times$ Garch (1,1)
+    * ARMA(1,1) $\times$ Garch (1,2)
+    * ARMA(1,1) $\times$ Garch (2,1)
+    * ARMA(1,1) $\times$ Garch (2,2)
+* Conditional Distribution used will be skewed student t-distriution
+
+## Model Input
+```{r, eval = FALSE, echo = TRUE}
+fit1 <- garchFit(~arma(1,1) + garch(1,1), 
+                 x, cond.dist = "sstd")
+fit2 <- garchFit(~arma(1,1) + garch(1,2), 
+                 x, cond.dist = "sstd")
+fit3 <- garchFit(~arma(1,1) + garch(2,1), 
+                 x, cond.dist = "sstd")
+fit4 <- garchFit(~arma(1,1) + garch(2,2), 
+                 x, cond.dist = "sstd") 
+```
+
+```{r, echo = F, results = "hide", warning = F}
+fit1 <- garchFit(~arma(1,1) + garch(1,1), x, cond.dist = "sstd")
+fit2 <- garchFit(~arma(1,1) + garch(1,2), x, cond.dist = "sstd")
+fit3 <- garchFit(~arma(1,1) + garch(2,1), x, cond.dist = "sstd")
+fit4 <- garchFit(~arma(1,1) + garch(2,2), x, cond.dist = "sstd") 
+```
+
+## Residual Analysis Fit1 QQ SSTD Plot
+```{r, echo = FALSE}
+plot(fit1, which = 13, main = "QQ SSTD Plot for Fit1")
+```
+
+
+## Residual Analysis Fit1 ACF
+```{r, echo = FALSE}
+plot(fit1, which = 11, main = "ACF of Squared Standardized Residuals Fit1")
+```
+
+## Residual Analysis Fit2 QQ SSTD Plot
+```{r, echo = FALSE}
+plot(fit2, which = 13, main = "QQ SSTD Plot for Fit2")
+```
+
+
+## Residual Analysis Fit2 ACF
+```{r, echo = FALSE}
+plot(fit2, which = 11, main = "ACF of Squared Standardized Residuals Fit2")
+```
+
+## Residual Analysis Fit3 QQ SSTD Plot
+```{r, echo = FALSE}
+plot(fit3, which = 13, main = "QQ SSTD Plot for Fit3")
+```
+
+
+## Residual Analysis Fit3 ACF
+```{r, echo = FALSE}
+plot(fit3, which = 11, main = "ACF of Squared Standardized Residuals Fit3")
+```
+
+## Residual Analysis Fit4 QQ SSTD Plot
+```{r, echo = FALSE}
+plot(fit4, which = 13, main = "QQ SSTD Plot for Fit3")
+```
+
+
+## Residual Analysis Fit4 ACF
+```{r, echo = FALSE}
+plot(fit4, which = 11, main = "ACF of Squared Standardized Residuals Fit3")
+```
+
+## Final Decision
+Based on Ljung-Box values on Squared Residuals, I chose fit4 which had the best Ljung-Box Test values, the best LM Arch test values, and the best looking residuals.
+
+Coefficients are on following slide
+
+## Coefficients of ARMA(1,1) GARCH(2,2)
+
+```{r, echo = FALSE, results = "markup"}
+knitr::kable(fit4@fit$matcoef)
+```
+
+
+## Forecasted Data
+```{r, echo = FALSE}
+fcast1=predict(fit4,n.ahead=30,plot=TRUE)
+```

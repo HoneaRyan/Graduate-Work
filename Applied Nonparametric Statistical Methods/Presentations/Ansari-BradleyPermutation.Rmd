@@ -1,0 +1,55 @@
+---
+title: "Ansari-Bradley Permutation Test"
+author: "Ryan Honea"
+date: "10/23/2017"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+require(coin)
+```
+
+## Data Entry
+
+```{r, echo = TRUE}
+dta <- rbind(
+  cbind(rnorm(20,0,2),rep(0,20)),
+  cbind(rnorm(20,0,1),rep(1,20))
+)
+
+dta <- data.frame(
+  y = dta[,1],
+  x = factor(dta[,2])
+)
+```
+
+## Obtaining Density
+```{r, echo = TRUE}
+## Ansari-Bradley Test
+at <- ansari_test(y ~ x, data = dta, distribution = "exact")
+atassymptotic <- ansari_test(y ~ x, data = dta)
+atapprox <- ansari_test(y ~ x, data = dta, distribution = "approx")
+
+## Creating density of the test-statistic
+supp <- support(at)
+dens <- dperm(at, x = supp)
+```
+
+## Plot of density
+
+```{r, echo = TRUE}
+plot(supp, dens, type = "s")
+```
+
+## P-Values for Difference of Scale
+```{r, echo = TRUE}
+## Finds Quantile
+qperm(at, p = 0.95)
+
+## One-sided p-value
+pperm(at, q = statistic(at))
+
+## Random number generation
+rperm(at, n = 5)
+```

@@ -1,0 +1,59 @@
+---
+title: "K-Nearest Neighbor in R"
+author: "Ryan Honea"
+date: "11/20/2017"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## K-Nearest Neighbor
+
+* Uses ```knn``` function from ```class``` library.
+* Function takes in four non-default values:
+    * training set
+    * testing set
+    * labels
+    * $k$ number of neighbors
+* Looks like ```knn(train, test, labels, k)```
+
+## Creating a Dataset
+
+```{r, echo = TRUE}
+df <- data.frame(
+  x = x <- runif(200,0,1),
+  y = y <- runif(200,0,1)
+)
+df$labels <- factor(apply(df, 1, function(x) 
+  if (sum(x) > 1) 1 else 0))
+```
+
+## Plot of Data
+```{r, echo = TRUE}
+plot(df$x, df$y, pch = c(16,18)[as.numeric(df$labels)], col = df$labels)
+abline(1, -1, lty = 2)
+```
+
+## KNN Training
+```{r, echo = TRUE}
+require(class)
+model <- knn(train = df[1:150,1:2], test = df[151:200,1:2],
+             cl = df$labels[1:150], k = 5)
+correct <- factor(model == df$labels[151:200])
+```
+
+## Plotting Results
+```{r, echo = TRUE}
+plot(df$x[151:200], df$y[151:200], col = c("red","green")[as.numeric(correct)], 
+     pch = c(16,18)[as.numeric(model)])
+abline(1, -1, lty = 2)
+legend("bottomright", c("Correct", "Incorrect"), col = c("red", "green"), pch = 15)
+```
+
+
+## With circle
+```{r, echo = TRUE}
+ %>% 
+```
